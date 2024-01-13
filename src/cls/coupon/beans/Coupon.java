@@ -1,4 +1,4 @@
-package cls.beans;
+package cls.coupon.beans;
 
 import cls.enums.Category;
 

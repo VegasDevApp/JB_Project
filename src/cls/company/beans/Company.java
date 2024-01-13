@@ -1,18 +1,17 @@
-package cls.enums;
+package cls.company.beans;
 
-import cls.beans.Coupon;
+import cls.coupon.beans.Coupon;
 
 import java.util.ArrayList;
 
-public class Customer {
+public class Company {
     private int id;
-    private String firstName;
-    private String lastName;
+    private String name;
     private String email;
     private String password;
     private ArrayList<Coupon> coupons;
 
-    public Customer() {
+    public Company() {
     }
 
     public int getId() {
@@ -23,20 +22,12 @@ public class Customer {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -65,10 +56,9 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer{" +
+        return "Company{" +
                 "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", coupons=" + coupons +
