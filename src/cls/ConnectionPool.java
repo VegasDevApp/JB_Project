@@ -68,7 +68,7 @@ public class ConnectionPool {
         }
     }
 
-    public void returnConnection(Connection connection){
+    public void restoreConnection(Connection connection){
         //critical code
         synchronized (connections){
             connections.push(connection);
