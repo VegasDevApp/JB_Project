@@ -7,7 +7,7 @@ public class DBManager {
     public static final String SQL_PASS = "12345678";
 
     //DataBase
-    public static final String DB = "onlinestore";
+    public static final String DB = "site_coupons";
 
     //CRUD
     //create Table
