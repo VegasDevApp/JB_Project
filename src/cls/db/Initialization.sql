@@ -1,4 +1,4 @@
-use onlinestore;
+use site_coupons;
 
 CREATE TABLE IF NOT EXISTS `COMPANIES` (
     `ID` INT NOT NULL AUTO_INCREMENT,

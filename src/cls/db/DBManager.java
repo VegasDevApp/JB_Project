@@ -1,4 +1,4 @@
-package cls;
+package cls.db;
 
 public class DBManager {
     //connection the mysql
