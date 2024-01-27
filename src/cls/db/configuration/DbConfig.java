@@ -41,7 +41,7 @@ public class DbConfig {
     }
 
     public String getConnectionString(){
-        return String.format("dbc:mysql://%s:%d/%s", host, port, schema);
+        return String.format("jdbc:mysql://%s:%d/%s?allowMultiQueries=true", host, port, schema);
     }
 
     public static DbConfig getInstance(){

@@ -1,9 +1,22 @@
 package cls.db;
 
+import cls.utils.Utilities;
+
 import java.sql.*;
 import java.util.Map;
 
 public class DBManager {
+
+    public static void initDataBase(){
+        // Read content of file
+        String fileContent = Utilities.getFileContent("src/cls/db/Initialization.sql");
+
+        if(runQuery(fileContent)){
+            System.out.println("DB INIT OK");
+        } else {
+            System.out.println("DB INIT ERROR!");
+        }
+    }
 
     public static boolean runQuery(String sql){
         //use connection from connection pool to send queries to our DB
