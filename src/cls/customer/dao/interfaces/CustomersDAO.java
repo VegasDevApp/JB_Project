@@ -1,4 +1,4 @@
-package cls.customer.interfaces;
+package cls.customer.dao.interfaces;
 
 import cls.customer.beans.Customer;
 
