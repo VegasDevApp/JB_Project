@@ -32,7 +32,8 @@ public class CouponsDaoImpl implements CouponsDAO {
     }
 
     @Override
-    public void updateCoupon(Coupon coupon) {
+    public boolean updateCoupon(Coupon coupon) {
+        boolean result = false;
         Coupon target = getOneCoupon(coupon.getId());
         if (target != null) {
             //COMPANY_ID`, `CATEGORY_ID`, `TITLE`, `DESCRIPTION`, `START_DATE`, `END_DATE`, `AMOUNT`, `PRICE`, `IMAGE`) " +
@@ -53,15 +54,24 @@ public class CouponsDaoImpl implements CouponsDAO {
 
             // Add ID for WHERE
             params.put(params.size() + 1, target.getId());
-            if (DBManager.runQuery(sql, params)) {
+            result = DBManager.runQuery(sql, params);
+            if (result) {
                 System.out.println("Coupon is updated: \n" + coupon);
             }
         }
+        return result;
     }
 
     @Override
     public void deleteCoupon(int couponID) {
-
+        Coupon coupon = getOneCoupon(couponID);
+        if(nonNull(coupon)){
+            detachCouponFromAllCustomers(couponID);
+            String sql = "DELETE FROM COUPONS WHERE ID=?;";
+            Map<Integer, Object> params = new HashMap<>();
+            params.put(1, couponID);
+            DBManager.runQuery(sql, params);
+        }
     }
 
     @Override
@@ -95,26 +105,39 @@ public class CouponsDaoImpl implements CouponsDAO {
 
     @Override
     public void addCouponPurchase(int customerID, int couponID) {
-        if(!isCustomerHasCoupon(customerID, couponID)){
+        if (!isCustomerHasCoupon(customerID, couponID)) {
             Coupon coupon = getOneCoupon(couponID);
-            if(nonNull(coupon)
+            if (nonNull(coupon)
                     && coupon.getAmount() > 0
-                    && !LocalDate.now().isAfter(coupon.getEndDate())
-                    && LocalDate.now().isAfter(coupon.getStartDate())){
-                coupon.setAmount(coupon.getAmount()-1);
-                updateCoupon(coupon);
-                attachCouponToCustomer(customerID,couponID);
+                    && (LocalDate.now().compareTo(coupon.getEndDate()) <= 0)
+                    && (LocalDate.now().compareTo(coupon.getStartDate()) >= 0)) {
+
+                coupon.setAmount(coupon.getAmount() - 1);
+                if (updateCoupon(coupon)) {
+                    attachCouponToCustomer(customerID, couponID);
+                }
             }
         }
     }
 
     @Override
     public void deleteCouponPurchase(int customerID, int couponID) {
+        if (isCustomerHasCoupon(customerID, couponID)) {
+            Coupon coupon = getOneCoupon(couponID);
+            // Check of coupon exist and not expired
+            if (nonNull(coupon)
+                    && (LocalDate.now().compareTo(coupon.getEndDate()) <= 0)) {
 
+                coupon.setAmount(coupon.getAmount() + 1);
+                if (updateCoupon(coupon)) {
+                    detachCouponFromCustomer(customerID, couponID);
+                }
+            }
+        }
     }
 
     private boolean isCustomerHasCoupon(int customerID, int couponID) {
-        String sql = "SELECT count(*) AS COUNT FROM COUPONS " +
+        String sql = "SELECT count(*) AS COUNT FROM COSTUMERS_VS_COUPONS " +
                 "WHERE CUSTOMER_ID = ? AND COUPON_ID = ?;";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerID);
@@ -130,12 +153,29 @@ public class CouponsDaoImpl implements CouponsDAO {
         }
     }
 
-    private boolean attachCouponToCustomer(int customerID, int couponID){
-        String sql = "INSERT INTO COUPONS (CUSTOMER_ID, COUPON_ID) " +
+    private boolean attachCouponToCustomer(int customerID, int couponID) {
+        String sql = "INSERT INTO COSTUMERS_VS_COUPONS (CUSTOMER_ID, COUPON_ID) " +
                 "VALUES (?, ?)";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerID);
         params.put(2, couponID);
+        return DBManager.runQuery(sql, params);
+    }
+
+    private boolean detachCouponFromCustomer(int customerID, int couponID) {
+        String sql = "DELETE FROM COSTUMERS_VS_COUPONS\n" +
+                "WHERE CUSTOMER_ID=? AND COUPON_ID=?;";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, customerID);
+        params.put(2, couponID);
+        return DBManager.runQuery(sql, params);
+    }
+
+    private boolean detachCouponFromAllCustomers(int couponID) {
+        String sql = "DELETE FROM COSTUMERS_VS_COUPONS\n" +
+                "WHERE COUPON_ID=?;";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, couponID);
         return DBManager.runQuery(sql, params);
     }
 

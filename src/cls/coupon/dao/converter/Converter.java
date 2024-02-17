@@ -14,9 +14,12 @@ public class Converter {
         try {
             while (resultSet.next()) {
                 Coupon coupon = new Coupon();
+
+                Category category = Category.getCategoryNameById(resultSet.getInt("CATEGORY_ID"));
+
                 coupon.setId(resultSet.getInt("ID"));
                 coupon.setCompanyID(resultSet.getInt("COMPANY_ID"));
-                coupon.setCategory(Category.valueOf(String.valueOf(resultSet.getInt("CATEGORY_ID"))));
+                coupon.setCategory(category);
                 coupon.setTitle(resultSet.getString("TITLE"));
                 coupon.setDescription(resultSet.getString("DESCRIPTION"));
                 coupon.setStartDate(resultSet.getDate("START_DATE").toLocalDate());

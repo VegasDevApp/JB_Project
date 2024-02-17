@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public interface CouponsDAO {
     void addCoupon(Coupon coupon);
-    void updateCoupon(Coupon coupon);
+    boolean updateCoupon(Coupon coupon);
     void deleteCoupon(int couponID);
     ArrayList<Coupon> getAllCoupons();
     Coupon getOneCoupon(int couponID);
