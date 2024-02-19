@@ -120,4 +120,20 @@ public class DBManager {
             ConnectionPool.getInstance().restoreConnection(connection);
         }
     }
+
+    public static ResultSet runQueryForResult(String sql){
+        Connection connection = null;
+        try{
+            connection = ConnectionPool.getInstance().getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+
+            //run the prepared statment
+            return statement.executeQuery();
+        } catch (InterruptedException | SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        } finally {
+            ConnectionPool.getInstance().restoreConnection(connection);
+        }
+    }
 }
