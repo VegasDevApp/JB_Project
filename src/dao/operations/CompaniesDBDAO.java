@@ -1,6 +1,6 @@
 package dao.operations;
 
-import cls.ConnectionPool;
+import cls.db.ConnectionPool;
 import dao.entities.Company;
 
 import java.sql.PreparedStatement;

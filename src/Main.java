@@ -1,3 +1,4 @@
+import cls.SystemStartUp;
 import dao.entities.Company;
 import dao.operations.CompaniesDBDAO;
 
@@ -7,7 +8,7 @@ import java.util.Objects;
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) throws Exception {
-
+        SystemStartUp.start();
         var dao = new CompaniesDBDAO();
         var company = new Company("test", "test@a.com", "123456");
 
@@ -28,7 +29,6 @@ public class Main {
         if (company1 == null) {
             throw new Exception("pizdetz one comany");
         }
-
 
 
         company1.name = "new name";
