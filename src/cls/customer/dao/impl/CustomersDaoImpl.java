@@ -116,8 +116,6 @@ public class CustomersDaoImpl implements CustomersDAO {
 
         Map<Integer, Object> params = new HashMap<>();
 
-        // CUSTOMER_ID
-        //params.put(1, customer.getId());
         // FIRST_NAME
         params.put(1, customer.getFirstName());
         // LAST_NAME
