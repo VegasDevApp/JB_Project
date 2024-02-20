@@ -23,8 +23,8 @@ public class CustomersDaoImpl implements CustomersDAO {
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, email);
         params.put(2, password);
-        ResultSet dbResult = DBManager.runQueryForResult(sql, params);
-        try {
+
+        try(ResultSet dbResult = DBManager.runQueryForResult(sql, params)) {
             return (
                     nonNull(dbResult)
                             && dbResult.next());
@@ -37,7 +37,7 @@ public class CustomersDaoImpl implements CustomersDAO {
     @Override
     public void addCustomer(Customer customer) {
         String sql = "INSERT INTO `customers` " +
-                "(ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD) VALUES (? ,?, ?, ?, ?)";
+                "(FIRST_NAME, LAST_NAME, EMAIL, PASSWORD) VALUES (?, ?, ?, ?)";
 
         Map<Integer, Object> params = populateParamsFull(customer);
 
@@ -53,12 +53,12 @@ public class CustomersDaoImpl implements CustomersDAO {
         Customer target = getOneCustomer(customer.getId());
         if (target != null) {
             //CUSTOMER_ID`, `FIRST_NAME`, `LAST_NAME`, `EMAIL`, `PASSWORD
-            String sql = "UPDATE `customers` SET ID=?, FIRST_NAME=?, " +
+            String sql = "UPDATE `customers` SET FIRST_NAME=?, " +
                     "LAST_NAME=?, EMAIL=?, PASSWORD=? WHERE (ID = ?)";
 
             Map<Integer, Object> params = populateParamsFull(customer);
 
-            params.put(params.size() + 1, target.getId());
+            params.put(params.size()+1 , target.getId());
             result = DBManager.runQuery(sql, params);
             if (result) {
                 System.out.println("Customer is updated: \n" + customer);
@@ -117,15 +117,15 @@ public class CustomersDaoImpl implements CustomersDAO {
         Map<Integer, Object> params = new HashMap<>();
 
         // CUSTOMER_ID
-        params.put(1, customer.getId());
+        //params.put(1, customer.getId());
         // FIRST_NAME
-        params.put(2, customer.getFirstName());
+        params.put(1, customer.getFirstName());
         // LAST_NAME
-        params.put(3, customer.getLastName());
+        params.put(2, customer.getLastName());
         // EMAIL
-        params.put(4, customer.getEmail());
+        params.put(3, customer.getEmail());
         // PASSWORD
-        params.put(5, customer.getPassword());
+        params.put(4, customer.getPassword());
 
         return params;
     }
