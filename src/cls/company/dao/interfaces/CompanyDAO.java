@@ -1,10 +1,10 @@
-package dao.operations;
+package cls.company.dao.interfaces;
 
-import dao.entities.Company;
+import cls.company.beans.Company;
 
 import java.util.ArrayList;
 
-public interface CompaniesDAO {
+public interface CompanyDAO {
     boolean isCompanyExists(String email, String password);
     void addCompany(Company company);
     void updateCompany(Company company);

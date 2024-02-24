@@ -1,7 +1,8 @@
-package dao.operations;
+package cls.company.dao.impl;
 
+import cls.company.beans.Company;
+import cls.company.dao.interfaces.CompanyDAO;
 import cls.db.ConnectionPool;
-import dao.entities.Company;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class CompaniesDBDAO implements CompaniesDAO {
+public class CompanyDaoImpl implements CompanyDAO {
     @Override
     public boolean isCompanyExists(String email, String password) {
         try {
@@ -38,9 +39,9 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 // we added Statement.RETURN_GENERATED_KEYS in order to obtain back a newly generated company ID
 
                 // set actual values of parameters
-                stmt.setString(1, company.name);
-                stmt.setString(2, company.email);
-                stmt.setString(3, company.password);
+                stmt.setString(1, company.getName());
+                stmt.setString(2, company.getEmail());
+                stmt.setString(3, company.getPassword());
 
                 // and execute the insert
                 var insertedRows = stmt.executeUpdate();
@@ -53,7 +54,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                     // the result set shall contain the generated ID as in its first column
                     if (generatedKeys.next()) {
-                        company.Id = generatedKeys.getInt(1);
+                        company.setId(generatedKeys.getInt(1));
                     } else {
                         throw new SQLException("creating user failed, no ID obtained.");
                     }
@@ -74,10 +75,10 @@ public class CompaniesDBDAO implements CompaniesDAO {
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
                 // set actual values of parameters
-                stmt.setString(1, company.name);
-                stmt.setString(2, company.email);
-                stmt.setString(3, company.password);
-                stmt.setInt(4, company.Id);
+                stmt.setString(1, company.getName());
+                stmt.setString(2, company.getEmail());
+                stmt.setString(3, company.getPassword());
+                stmt.setInt(4, company.getId());
 
                 // and execute the insert
                 var updatedRows = stmt.executeUpdate();
@@ -101,7 +102,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
                 // set actual values of parameters
-                stmt.setInt(1, company.Id);
+                stmt.setInt(1, company.getId());
 
                 // and execute the insert
                 var deletedRows = stmt.executeUpdate();
@@ -127,11 +128,11 @@ public class CompaniesDBDAO implements CompaniesDAO {
                     if (rs == null || !rs.next()) {
                         return null;
                     }
-                    var company = new Company(
-                            rs.getString(2),
-                            rs.getString(3),
-                            rs.getString(4));
-                    company.Id = rs.getInt(1);
+                    var company = new Company();
+                    company.setId(rs.getInt(1));
+                    company.setName(rs.getString(2));
+                    company.setEmail(rs.getString(3));
+                    company.setPassword(rs.getString(4));
                     return company;
                 }
             }
@@ -154,11 +155,11 @@ public class CompaniesDBDAO implements CompaniesDAO {
                     var result = new ArrayList<Company>();
 
                     while (rs.next()) {
-                        var company = new Company(
-                                rs.getString(2),
-                                rs.getString(3),
-                                rs.getString(4));
-                        company.Id = rs.getInt(1);
+                        var company = new Company();
+                        company.setId(rs.getInt(1));
+                        company.setName(rs.getString(2));
+                        company.setEmail(rs.getString(3));
+                        company.setPassword(rs.getString(4));
                         result.add(company);
                     }
                     return result;
