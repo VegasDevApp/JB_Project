@@ -3,6 +3,7 @@ package cls.db;
 import cls.utils.Utilities;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.Map;
 
 public class DBManager {
@@ -45,11 +46,7 @@ public class DBManager {
         try{
             connection = ConnectionPool.getInstance().getConnection();
             PreparedStatement statement = connection.prepareStatement(sql);
-            /*
-            for (Map.Entry<Integer, Object> item: params.entrySet()){
 
-            }
-            */
             params.forEach((key,value)->{
                 try{
                     //integer,string,date,double,boolean,float
@@ -59,6 +56,8 @@ public class DBManager {
                         statement.setString(key,String.valueOf(value));
                     } else if (value instanceof Date){
                         statement.setDate(key,(Date)value);
+                    } else if (value instanceof LocalDate){
+                        statement.setDate(key, Date.valueOf((LocalDate)value));
                     } else if (value instanceof Double){
                         statement.setDouble(key,(Double) value);
                     } else if (value instanceof Boolean){
@@ -86,11 +85,7 @@ public class DBManager {
         try{
             connection = ConnectionPool.getInstance().getConnection();
             PreparedStatement statement = connection.prepareStatement(sql);
-            /*
-            for (Map.Entry<Integer, Object> item: params.entrySet()){
 
-            }
-            */
             params.forEach((key,value)->{
                 try{
                     //integer,string,date,double,boolean,float

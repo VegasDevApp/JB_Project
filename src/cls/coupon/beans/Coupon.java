@@ -42,6 +42,10 @@ public class Coupon {
         return category;
     }
 
+    public int getCategoryId() {
+        return category.ordinal();
+    }
+
     public void setCategory(Category category) {
         this.category = category;
     }
