@@ -2,10 +2,9 @@ package cls.customer.dao.impl;
 
 
 import cls.customer.beans.Customer;
-import cls.customer.dao.converter.Converter;
 import cls.customer.dao.interfaces.CustomersDAO;
 import cls.db.DBManager;
-
+import cls.customer.dao.converter.Converter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
