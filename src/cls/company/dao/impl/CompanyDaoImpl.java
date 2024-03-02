@@ -13,28 +13,21 @@ import java.util.Map;
 import static java.util.Objects.nonNull;
 
 public class CompanyDaoImpl implements CompanyDAO {
+
     @Override
-    public boolean isCompanyExists(String email, String password) {
+    public boolean isCompanyExists(String email, String name) {
         boolean result = false;
-        var sql = "select * from companies where email = ? and password = ?";
+        String sql = "SELECT * FROM COMPANIES WHERE EMAIL = ? OR NAME = ?";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1,email);
-        params.put(2,password);
+        params.put(2,name);
         ResultSet dbResult = DBManager.runQueryForResult(sql, params);
         if (nonNull(dbResult)) {
             ArrayList<Company> companies = Converter.populate(dbResult);
             return !companies.isEmpty();
-//
-//            if (!companies.isEmpty()){
-//                Company resCompany = companies.get(0);
-//                return(resCompany.getEmail().equals(email)
-//                        && resCompany.getPassword().equals(password) );
-//            }
         }
         return result;
     }
-
-
 
     @Override
     public void addCompany(Company company) {
@@ -51,10 +44,12 @@ public class CompanyDaoImpl implements CompanyDAO {
         boolean result = false;
         Company target = getOneCompany(company.getId());
         if (target != null) {
-            var sql = "update companies set name=?, email=?, password=? where id=?";
+            var sql = "UPDATE COMPANIES SET EMAIL=?, PASSWORD=? WHERE ID=?";
 
-            Map<Integer, Object> params = populateParamsFull(company);
-            params.put(params.size() + 1, target.getId());
+            Map<Integer, Object> params = new HashMap<>();
+            params.put(1, target.getEmail());
+            params.put(2, target.getPassword());
+            params.put(3, target.getId());
             result = DBManager.runQuery(sql, params);
             if (result) {
                 System.out.println("Company is updated: \n" + company);
@@ -65,23 +60,24 @@ public class CompanyDaoImpl implements CompanyDAO {
     }
 
     @Override
-    public void deleteCompany(int companyId) {
+    public boolean deleteCompany(int companyId) {
+        boolean result = false;
         Company company1 = getOneCompany(companyId);
         if (nonNull(company1)) {
 
-            var sql = "delete from companies where id=?";
+            var sql = "DELETE FROM COMPANIES WHERE ID=?";
             Map<Integer, Object> params = new HashMap<>();
             params.put(1, companyId);
-            DBManager.runQuery(sql, params);
+            return DBManager.runQuery(sql, params);
         }
-
+        return result;
     }
 
     @Override
     public Company getOneCompany(int companyId) {
 
         Company result = null;
-        var sql = "select id, name, email, password from companies where id = ?";
+        var sql = "SELECT ID, NAME, EMAIL, PASSWORD FROM COMPANIES WHERE ID = ?";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, companyId);
         ResultSet dbResult = DBManager.runQueryForResult(sql, params);
@@ -96,7 +92,7 @@ public class CompanyDaoImpl implements CompanyDAO {
     public ArrayList<Company> getAllCompanies() {
         ArrayList<Company> result = new ArrayList<>();
 
-        var sql = "select id, name, email, password from companies";
+        var sql = "SELECT ID, NAME, EMAIL, PASSWORD FROM COMPANIES";
 
         ResultSet dbResult = DBManager.runQueryForResult(sql);
         if (nonNull(dbResult)) {
