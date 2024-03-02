@@ -36,6 +36,8 @@ public class CompanyDaoImpl implements CompanyDAO {
 
 
 
+
+
     @Override
     public void addCompany(Company company) {
         var sql = "insert into companies (name, email, password) values (?, ?, ?)";
@@ -75,6 +77,19 @@ public class CompanyDaoImpl implements CompanyDAO {
             DBManager.runQuery(sql, params);
         }
 
+    }
+    public Company getOneCompanyByEmail(String email) {
+
+        Company result = null;
+        var sql = "select id, name, email, password from companies where email = ?";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, email);
+        ResultSet dbResult = DBManager.runQueryForResult(sql, params);
+        if (nonNull(dbResult)) {
+            ArrayList<Company> companies = Converter.populate(dbResult);
+            if (!companies.isEmpty()) result = companies.get(0);
+        }
+        return result;
     }
 
     @Override
