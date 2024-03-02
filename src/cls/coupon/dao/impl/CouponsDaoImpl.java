@@ -4,6 +4,7 @@ import cls.coupon.beans.Coupon;
 import cls.coupon.dao.converter.Converter;
 import cls.coupon.dao.interfaces.CouponsDAO;
 import cls.db.DBManager;
+import cls.enums.Category;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -134,6 +135,49 @@ public class CouponsDaoImpl implements CouponsDAO {
                 }
             }
         }
+    }
+
+    public ArrayList<Coupon> getAllCustomerCoupons(int customerID) {
+        ArrayList<Coupon> result = new ArrayList<>();
+
+        String sql = "SELECT * FROM COUPONS WHERE ID=?";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, customerID);
+
+        ResultSet dbResult = DBManager.runQueryForResult(sql, params);
+        if (nonNull(dbResult)) {
+            result = Converter.populate(dbResult);
+        }
+        return result;
+    }
+
+    public ArrayList<Coupon> getAllCustomerCoupons(Category category) {
+        ArrayList<Coupon> result = new ArrayList<>();
+
+        String sql = "SELECT * FROM COUPONS WHERE ID=?";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, category.getId());
+
+        ResultSet dbResult = DBManager.runQueryForResult(sql, params);
+        if (nonNull(dbResult)) {
+            result = Converter.populate(dbResult);
+        }
+        return result;
+    }
+
+    public ArrayList<Coupon> getCustomerCouponsBelowPrice(int customerId, double price) {
+        ArrayList<Coupon> result = new ArrayList<>();
+
+        String sql = "SELECT * FROM COUPONS WHERE ID=? AND PRICE <= ?";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, customerId);
+        params.put(2, price);
+
+        ResultSet dbResult = DBManager.runQueryForResult(sql, params);
+        if (nonNull(dbResult)) {
+            result = Converter.populate(dbResult);
+        }
+        return result;
     }
 
     private boolean isCustomerHasCoupon(int customerID, int couponID) {

@@ -5,6 +5,7 @@ import cls.customer.beans.Customer;
 import cls.customer.dao.interfaces.CustomersDAO;
 import cls.db.DBManager;
 import cls.customer.dao.converter.Converter;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class CustomersDaoImpl implements CustomersDAO {
         params.put(1, email);
         params.put(2, password);
 
-        try(ResultSet dbResult = DBManager.runQueryForResult(sql, params)) {
+        try (ResultSet dbResult = DBManager.runQueryForResult(sql, params)) {
             return (
                     nonNull(dbResult)
                             && dbResult.next());
@@ -57,7 +58,7 @@ public class CustomersDaoImpl implements CustomersDAO {
 
             Map<Integer, Object> params = populateParamsFull(customer);
 
-            params.put(params.size()+1 , target.getId());
+            params.put(params.size() + 1, target.getId());
             result = DBManager.runQuery(sql, params);
             if (result) {
                 System.out.println("Customer is updated: \n" + customer);
@@ -71,8 +72,8 @@ public class CustomersDaoImpl implements CustomersDAO {
         String sql = "DELETE FROM `customers` WHERE (`ID` = ?);";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerID);
-        if (DBManager.runQuery(sql, params)){
-            System.out.println("Customer with id "+customerID+" was deleted!\n");
+        if (DBManager.runQuery(sql, params)) {
+            System.out.println("Customer with id " + customerID + " was deleted!\n");
         }
     }
 
@@ -96,6 +97,21 @@ public class CustomersDaoImpl implements CustomersDAO {
         String sql = "SELECT * FROM `customers` WHERE ID = ?";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerID);
+
+        ResultSet dbResult = DBManager.runQueryForResult(sql, params);
+        if (nonNull(dbResult)) {
+            ArrayList<Customer> customers = Converter.populate(dbResult);
+            if (!customers.isEmpty()) result = customers.get(0);
+        }
+        return result;
+    }
+
+    public Customer getOneCustomerByEmail(String email) {
+        Customer result = null;
+
+        String sql = "SELECT * FROM `customers` WHERE EMAIL = ?";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, email);
 
         ResultSet dbResult = DBManager.runQueryForResult(sql, params);
         if (nonNull(dbResult)) {
