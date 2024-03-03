@@ -7,15 +7,26 @@ import java.util.List;
 
 public class AdminFacade extends ClientFacade {
 
+    private boolean isLoggedIn = false;
+
     public AdminFacade() {
     }
 
     @Override
     public boolean login(String email, String password) {
-        return "admin@admin.com".equalsIgnoreCase(email) && "admin".equals(password);
+        this.isLoggedIn = "admin@admin.com".equalsIgnoreCase(email) && "admin".equals(password);
+        if(this.isLoggedIn){
+            System.out.println("You are logged in");
+        } else {
+            System.out.println("Email or password incorrect, try again");
+        }
+        return this.isLoggedIn;
     }
 
-    public void addCompany(Company company) {
+    public void addCompany(Company company) throws Exception {
+
+        notLoggedIn();
+
         if (!this.companyDao.isCompanyExists(company.getEmail(), company.getName())) {
             this.companyDao.addCompany(company);
         } else {
@@ -27,7 +38,9 @@ public class AdminFacade extends ClientFacade {
         this.companyDao.updateCompany(company);
     }
 
-    public void deleteCompany(int companyId) {
+    public void deleteCompany(int companyId) throws Exception {
+
+        notLoggedIn();
 
         // Delete coupon purchase history
         this.couponsDao.deleteCouponPurchasesByCompanyId(companyId);
@@ -39,15 +52,18 @@ public class AdminFacade extends ClientFacade {
         this.companyDao.deleteCompany(companyId);
     }
 
-    public List<Company> getAllCompanies() {
+    public List<Company> getAllCompanies() throws Exception {
+        notLoggedIn();
         return this.companyDao.getAllCompanies();
     }
 
-    public Company getOneCompany(int companyId) {
+    public Company getOneCompany(int companyId) throws Exception {
+        notLoggedIn();
         return this.companyDao.getOneCompany(companyId);
     }
 
-    public void addCustomer(Customer customer) {
+    public void addCustomer(Customer customer) throws Exception {
+        notLoggedIn();
         if(this.customersDao.isCustomerExists(customer.getEmail())) {
             this.customersDao.addCustomer(customer);
         }
@@ -56,20 +72,30 @@ public class AdminFacade extends ClientFacade {
         }
     }
 
-    public void updateCustomer(Customer customer) {
+    public void updateCustomer(Customer customer) throws Exception {
+        notLoggedIn();
         this.customersDao.updateCustomer(customer);
     }
 
-    public void deleteCustomer(int customerId) {
+    public void deleteCustomer(int customerId) throws Exception {
+        notLoggedIn();
         this.couponsDao.detachAllCouponFromCustomer(customerId);
         this.customersDao.deleteCustomer(customerId);
     }
 
-    public List<Customer> getAllCustomers() {
+    public List<Customer> getAllCustomers() throws Exception {
+        notLoggedIn();
         return customersDao.getAllCustomers();
     }
 
-    public Customer getOneCustomer(int customerId) {
+    public Customer getOneCustomer(int customerId) throws Exception {
+        notLoggedIn();
         return this.customersDao.getOneCustomer(customerId);
+    }
+
+    private void notLoggedIn() throws Exception {
+        if(!this.isLoggedIn){
+            throw new Exception("Access denied, please log in!");
+        }
     }
 }
