@@ -140,7 +140,8 @@ public class CouponsDaoImpl implements CouponsDAO {
     public ArrayList<Coupon> getAllCustomerCoupons(int customerID) {
         ArrayList<Coupon> result = new ArrayList<>();
 
-        String sql = "SELECT * FROM COUPONS WHERE ID=?";
+        String sql = "SELECT * FROM COUPONS WHERE ID IN (SELECT * FROM CUSTOMERS_VS_COUPONS " +
+                "WHERE CUSTOMER_ID=?);";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerID);
 
@@ -154,9 +155,10 @@ public class CouponsDaoImpl implements CouponsDAO {
     public ArrayList<Coupon> getAllCustomerCoupons(Category category) {
         ArrayList<Coupon> result = new ArrayList<>();
 
-        String sql = "SELECT * FROM COUPONS WHERE ID=?";
+        String sql = "SELECT * FROM COUPONS WHERE CATEGORY_ID=?";
         Map<Integer, Object> params = new HashMap<>();
-        params.put(1, category.getId());
+        params.put(1,category.getId());
+
 
         ResultSet dbResult = DBManager.runQueryForResult(sql, params);
         if (nonNull(dbResult)) {
@@ -168,7 +170,9 @@ public class CouponsDaoImpl implements CouponsDAO {
     public ArrayList<Coupon> getCustomerCouponsBelowPrice(int customerId, double price) {
         ArrayList<Coupon> result = new ArrayList<>();
 
-        String sql = "SELECT * FROM COUPONS WHERE ID=? AND PRICE <= ?";
+        String sql = "SELECT * FROM COUPONS WHERE ID IN " +
+                "(SELECT * FROM CUSTOMERS_VS_COUPONS WHERE CUSTOMER_ID=?)" +
+                "AND PRICE <= ?";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerId);
         params.put(2, price);
