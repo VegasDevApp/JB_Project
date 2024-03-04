@@ -31,10 +31,11 @@ public class CustomerFacade extends ClientFacade {
             if (this.isLoggedIn) {
                 customerID = customerByEmail.getId();
                 System.out.println("You are logged in!");
-                return this.isLoggedIn;
             }
-        }else
-        System.out.println("Email or password are incorrect, try again");
+        }else {
+            System.out.println("Email or password are incorrect, try again");
+        }
+
         return this.isLoggedIn;
     }
 
