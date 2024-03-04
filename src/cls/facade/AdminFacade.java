@@ -2,6 +2,7 @@ package cls.facade;
 
 import cls.company.beans.Company;
 import cls.customer.beans.Customer;
+import cls.exceptions.UnAuthorizedException;
 
 import java.util.List;
 
@@ -95,7 +96,7 @@ public class AdminFacade extends ClientFacade {
 
     private void notLoggedIn() throws Exception {
         if(!this.isLoggedIn){
-            throw new Exception("Access denied, please log in!");
+            throw new UnAuthorizedException("Access denied, please log in!");
         }
     }
 }

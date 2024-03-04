@@ -102,7 +102,7 @@ public class CompanyDaoImpl implements CompanyDAO {
     }
 
     /**
-     * Take company and returns hash map with index=value for sql prepared statement
+     * Take company and returns a hash map with index=value for sql prepared statement
      *
      * @param company instance of Company
      * @return hashmap for sql prepared statement
