@@ -1,48 +1,14 @@
 package cls.facade;
 
 import cls.company.beans.Company;
-import cls.company.dao.interfaces.CompanyDAO;
 import cls.coupon.beans.Coupon;
 import cls.enums.Category;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 import static java.util.Objects.isNull;
 
 public class CompanyFacade extends ClientFacade {
-
-    public CompanyFacade(CompanyDAO companyDAO, String userName, String password) {
-        var company = companyDAO.getOneCompanyByEmail(userName);
-        if (isNull(company)) {
-            throw new InvalidParameterException("no such company");
-        }
-        if (!password.equals(company.getPassword())) {
-            throw new InvalidParameterException("wrong password");
-        }
-        this.company = company;
-    }
-
-    public static CompanyFacade Create(CompanyDAO companyDAO, String userName, String password) {
-        // Prerequisites - company has to exists and password shall be correct
-        var company = companyDAO.getOneCompanyByEmail(userName);
-        if (isNull(company)) {
-            return null;
-        }
-        if (!password.equals(company.getPassword())) {
-            return null;
-        }
-
-        // Creation of uninitialized object
-        var companyFacade = new CompanyFacade();
-
-        // Initialization of the object
-        companyFacade.company = company;
-
-        return companyFacade;
-
-    }
-
 
     private CompanyFacade() {
     }
