@@ -24,19 +24,12 @@ public class CustomerFacade extends ClientFacade {
         if (isNotNull && isNotEmpty) {
 
             Customer customerByEmail = customersDao.getOneCustomerByEmail(email);
-            boolean customerCheckPassword = customerByEmail.getPassword().equals(password);
-            boolean customerCheckEmail = customerByEmail.getEmail().equals(email);
-            this.isLoggedIn = customerCheckPassword && customerCheckEmail;
-
-            if (this.isLoggedIn) {
+            if (nonNull(customerByEmail)) {
                 customerID = customerByEmail.getId();
-                System.out.println("You are logged in!");
+                return customerByEmail.getPassword().equals(password);
             }
-        }else {
-            System.out.println("Email or password are incorrect, try again");
         }
-
-        return this.isLoggedIn;
+         return false;
     }
 
     public void purchaseCoupon(Coupon coupon) throws Exception {
@@ -53,7 +46,7 @@ public class CustomerFacade extends ClientFacade {
 
     public ArrayList<Coupon> getCustomerCoupons(Category category) throws Exception {
         notLoggedIn();
-        return couponsDao.getAllCustomerCoupons(category);
+        return couponsDao.getAllCustomerCoupons(customerID, category);
     }
 
     public ArrayList<Coupon> getCustomerCoupons(double maxPrice) throws Exception {

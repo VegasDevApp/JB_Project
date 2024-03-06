@@ -226,13 +226,15 @@ public class CouponsDaoImpl implements CouponsDAO {
         return result;
     }
 
-    public ArrayList<Coupon> getAllCustomerCoupons(Category category) {
+    public ArrayList<Coupon> getAllCustomerCoupons(int customerID, Category category) {
         ArrayList<Coupon> result = new ArrayList<>();
 
-        String sql = "SELECT * FROM COUPONS WHERE CATEGORY_ID=?";
+        String sql = "SELECT * FROM COUPONS WHERE ID IN " +
+                "(SELECT * FROM CUSTOMERS_VS_COUPONS WHERE CUSTOMER_ID=?)" +
+                "AND CATEGORY_ID = ?";
         Map<Integer, Object> params = new HashMap<>();
-        params.put(1,category.getId());
-
+        params.put(1,customerID);
+        params.put(2,category.getId());
 
         ResultSet dbResult = DBManager.runQueryForResult(sql, params);
         if (nonNull(dbResult)) {
