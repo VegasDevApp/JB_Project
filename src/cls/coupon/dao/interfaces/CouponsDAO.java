@@ -24,4 +24,7 @@ public interface CouponsDAO {
 
     ArrayList<Coupon> getCompanyCouponsBelowPrice(int companyID, double price);
 
+     ArrayList<Coupon> getAllCustomerCoupons(int customerID);
+    ArrayList<Coupon> getAllCustomerCoupons(int customerID, Category category);
+    ArrayList<Coupon> getCustomerCouponsBelowPrice(int customerId, double price);
 }

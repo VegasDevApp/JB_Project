@@ -6,15 +6,16 @@ import java.util.ArrayList;
 
 public interface CustomersDAO {
 
-    public boolean isCustomerExists(String email);
+     boolean isCustomerExists(String email);
 
-    public void addCustomer(Customer customer);
+     void addCustomer(Customer customer);
 
-    public boolean updateCustomer(Customer customer);
+     boolean updateCustomer(Customer customer);
 
-    public void deleteCustomer(int customerID);
+     void deleteCustomer(int customerID);
 
-    public ArrayList<Customer> getAllCustomers();
+     ArrayList<Customer> getAllCustomers();
 
-    public Customer getOneCustomer(int customerID);
+     Customer getOneCustomer(int customerID);
+    Customer getOneCustomerByEmail(String email);
 }
