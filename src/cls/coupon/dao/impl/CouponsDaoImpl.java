@@ -63,6 +63,23 @@ public class CouponsDaoImpl implements CouponsDAO {
         return result;
     }
 
+    public boolean isCouponExist(Coupon coupon){
+        var result = false;
+        String sql = "SELECT * FROM COUPONS WHERE COMPANY_ID = ? AND TITLE = ?;";
+        Map<Integer, Object> params = new HashMap<>();
+
+        // Add ID for WHERE
+        params.put( 1, coupon.getId());
+        params.put( 2, coupon.getTitle());
+        ResultSet dbResult = DBManager.runQueryForResult(sql, params);
+        if (nonNull(dbResult)) {
+            var coupons = Converter.populate(dbResult);
+            return !coupons.isEmpty();
+        }
+
+        return result;
+    }
+
     @Override
     public void deleteCoupon(int couponID) {
         Coupon coupon = getOneCoupon(couponID);
@@ -73,6 +90,51 @@ public class CouponsDaoImpl implements CouponsDAO {
             params.put(1, couponID);
             DBManager.runQuery(sql, params);
         }
+    }
+    @Override
+    public ArrayList<Coupon> getAllCompanyCoupons(int companyID) {
+        ArrayList<Coupon> result = new ArrayList<>();
+
+        String sql = "SELECT * FROM COUPONS WHERE COMPANY_ID=?";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, companyID);
+
+        ResultSet dbResult = DBManager.runQueryForResult(sql, params);
+        if (nonNull(dbResult)) {
+            result = Converter.populate(dbResult);
+        }
+        return result;
+    }
+
+    @Override
+    public ArrayList<Coupon> getAllCompanyCoupons(Category category) {
+        ArrayList<Coupon> result = new ArrayList<>();
+
+        String sql = "SELECT * FROM COUPONS WHERE COMPANY_ID=?";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, category.getId());
+
+        ResultSet dbResult = DBManager.runQueryForResult(sql, params);
+        if (nonNull(dbResult)) {
+            result = Converter.populate(dbResult);
+        }
+        return result;
+    }
+
+
+    public ArrayList<Coupon> getCompanyCouponsBelowPrice(int companyId, double price) {
+        ArrayList<Coupon> result = new ArrayList<>();
+
+        String sql = "SELECT * FROM COUPONS WHERE COMPANY_ID=? AND PRICE <= ?";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, companyId);
+        params.put(2, price);
+
+        ResultSet dbResult = DBManager.runQueryForResult(sql, params);
+        if (nonNull(dbResult)) {
+            result = Converter.populate(dbResult);
+        }
+        return result;
     }
 
     //TODO - Check
@@ -151,7 +213,7 @@ public class CouponsDaoImpl implements CouponsDAO {
     public void deleteCouponPurchase(int customerID, int couponID) {
         if (isCustomerHasCoupon(customerID, couponID)) {
             Coupon coupon = getOneCoupon(couponID);
-            // Check of coupon exist and not expired
+            // Check of coupon exists and not expires
             if (nonNull(coupon)
                     && (LocalDate.now().compareTo(coupon.getEndDate()) <= 0)) {
 
