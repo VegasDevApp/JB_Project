@@ -72,6 +72,19 @@ public class CompanyDaoImpl implements CompanyDAO {
         }
         return result;
     }
+    public Company getOneCompanyByEmail(String email) {
+
+        Company result = null;
+        var sql = "select id, name, email, password from companies where email = ?";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, email);
+        ResultSet dbResult = DBManager.runQueryForResult(sql, params);
+        if (nonNull(dbResult)) {
+            ArrayList<Company> companies = Converter.populate(dbResult);
+            if (!companies.isEmpty()) result = companies.get(0);
+        }
+        return result;
+    }
 
     @Override
     public Company getOneCompany(int companyId) {
