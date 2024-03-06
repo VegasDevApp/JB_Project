@@ -13,9 +13,8 @@ public enum Category {
 
         if (id >= 1 && id <= categories.length) {
             return categories[id - 1];
-        } else {
-            return null;
         }
+            return categories[0];
     }
 
     public int getId() {
