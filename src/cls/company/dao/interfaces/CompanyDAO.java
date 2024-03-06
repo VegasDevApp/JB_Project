@@ -8,7 +8,7 @@ public interface CompanyDAO {
     boolean isCompanyExists(String email, String password);
     void addCompany(Company company);
     boolean updateCompany(Company company);
-    void deleteCompany(int companyId);
+    boolean deleteCompany(int companyId);
     Company getOneCompany(int companyId);
     ArrayList<Company> getAllCompanies();
     Company getOneCompanyByEmail(String email);
