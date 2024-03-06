@@ -17,12 +17,11 @@ import static java.util.Objects.nonNull;
 public class CustomersDaoImpl implements CustomersDAO {
 
     @Override
-    public boolean isCustomerExists(String email, String password) {
+    public boolean isCustomerExists(String email) {
         String sql = "SELECT * FROM customers " +
-                "WHERE email = ? AND password = ?";
+                "WHERE email = ?";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, email);
-        params.put(2, password);
 
         try (ResultSet dbResult = DBManager.runQueryForResult(sql, params)) {
             return (
@@ -53,8 +52,9 @@ public class CustomersDaoImpl implements CustomersDAO {
         Customer target = getOneCustomer(customer.getId());
         if (target != null) {
             //CUSTOMER_ID`, `FIRST_NAME`, `LAST_NAME`, `EMAIL`, `PASSWORD
-            String sql = "UPDATE `customers` SET FIRST_NAME=?, " +
-                    "LAST_NAME=?, EMAIL=?, PASSWORD=? WHERE (ID = ?)";
+            String sql = "UPDATE CUSTOMERS " +
+                    "SET FIRST_NAME = ?, " +
+                    "LAST_NAME=?, EMAIL=?, PASSWORD=? WHERE ID = ?";
 
             Map<Integer, Object> params = populateParamsFull(customer);
 

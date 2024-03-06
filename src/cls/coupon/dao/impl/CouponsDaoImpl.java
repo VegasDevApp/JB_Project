@@ -76,6 +76,15 @@ public class CouponsDaoImpl implements CouponsDAO {
     }
 
     @Override
+    public boolean deleteCouponsByCompanyId(int companyId) {
+
+            String sql = "DELETE FROM COUPONS WHERE COMPANY_ID = ?;";
+            Map<Integer, Object> params = new HashMap<>();
+            params.put(1, companyId);
+            return DBManager.runQuery(sql, params);
+    }
+
+    @Override
     public ArrayList<Coupon> getAllCoupons() {
         ArrayList<Coupon> result = new ArrayList<>();
 
@@ -122,6 +131,21 @@ public class CouponsDaoImpl implements CouponsDAO {
     }
 
     @Override
+    public void deleteCouponPurchasesByCompanyId(int companyId){
+        String sql = "DELETE FROM COSTUMERS_VS_COUPONS " +
+                "WHERE COUPON_ID IN (" +
+                "SELECT ID " +
+                "FROM Coupon " +
+                "WHERE COMPANY_ID = ?" +
+                ");";
+
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, companyId);
+
+        DBManager.runQuery(sql, params);
+    }
+
+    @Override
     public void deleteCouponPurchase(int customerID, int couponID) {
         if (isCustomerHasCoupon(customerID, couponID)) {
             Coupon coupon = getOneCoupon(couponID);
@@ -135,6 +159,56 @@ public class CouponsDaoImpl implements CouponsDAO {
                 }
             }
         }
+    }
+
+    /**
+     * Before deleting a customer, returns all his or her
+     * coupons back.
+     * YOU MUST-CLEAR PURCHASE HISTORY AS WELL!!!
+     * @param customerID
+     */
+    private void increaseCouponAmountByCustomerId(int customerID){
+        String sql = "UPDATE COUPONS " +
+                "SET AMOUNT = AMOUNT + 1 " +
+                "WHERE ID IN (" +
+                    "SELECT COUPON_ID " +
+                    "FROM COSTUMERS_VS_COUPONS " +
+                    "WHERE CUSTOMER_ID = ?" +
+                ");";
+
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, customerID);
+        DBManager.runQuery(sql, params);
+    }
+
+    private void deleteCouponPurchasesByCustomerId(int customer){
+        String sql = "DELETE FROM COSTUMERS_VS_COUPONS " +
+                "WHERE CUSTOMER_ID = ?;";
+
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, customer);
+
+        DBManager.runQuery(sql, params);
+    }
+
+    /**
+     * Will delete all coupons from history
+     * and increase coupon amount by one, so
+     * the other customer can buy it if coupon still valid
+     * @param customerId
+     */
+    @Override
+    public void detachAllCouponFromCustomer(int customerId){
+
+        // We are performing this LOGIC in DAO
+        // To ensure that both these operations
+        // are executed and prevent anomalies as
+        // mach as is possible.
+        // Actually, it should be done in TRANSACTION
+        // which we didn't learn yet
+
+        increaseCouponAmountByCustomerId(customerId);
+        deleteCouponPurchasesByCustomerId(customerId);
     }
 
     public ArrayList<Coupon> getAllCustomerCoupons(int customerID) {
@@ -211,7 +285,7 @@ public class CouponsDaoImpl implements CouponsDAO {
     }
 
     private boolean detachCouponFromCustomer(int customerID, int couponID) {
-        String sql = "DELETE FROM COSTUMERS_VS_COUPONS\n" +
+        String sql = "DELETE FROM COSTUMERS_VS_COUPONS " +
                 "WHERE CUSTOMER_ID=? AND COUPON_ID=?;";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerID);
@@ -220,7 +294,7 @@ public class CouponsDaoImpl implements CouponsDAO {
     }
 
     private boolean detachCouponFromAllCustomers(int couponID) {
-        String sql = "DELETE FROM COSTUMERS_VS_COUPONS\n" +
+        String sql = "DELETE FROM COSTUMERS_VS_COUPONS " +
                 "WHERE COUPON_ID=?;";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, couponID);
@@ -228,7 +302,7 @@ public class CouponsDaoImpl implements CouponsDAO {
     }
 
     /**
-     * Take coupon and returns hash map with index=value for sql prepared statement
+     * Take coupon and returns a hash map with index=value for sql prepared statement
      *
      * @param coupon instance of Coupon
      * @return hashmap for sql prepared statement
