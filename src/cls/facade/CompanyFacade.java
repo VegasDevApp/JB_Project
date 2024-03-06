@@ -3,19 +3,20 @@ package cls.facade;
 import cls.company.beans.Company;
 import cls.coupon.beans.Coupon;
 import cls.enums.Category;
+import cls.exceptions.UnAuthorizedException;
 
 import java.util.ArrayList;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class CompanyFacade extends ClientFacade {
+    int companyId;
 
-    private CompanyFacade() {
+    public CompanyFacade() {
     }
 
-    private Company company;
-
-    public void addCoupon(Coupon coupon) {
+    public void addCoupon(Coupon coupon) throws Exception {
+        notLoggedIn();
         if (!couponsDao.isCouponExist(coupon)) {
             couponsDao.addCoupon(coupon);
         } else {
@@ -24,44 +25,56 @@ public class CompanyFacade extends ClientFacade {
     }
 
 
-    public void updateCoupon(Coupon coupon) {
+    public void updateCoupon(Coupon coupon) throws Exception {
+        notLoggedIn();
         couponsDao.updateCoupon(coupon);
     }
 
-    public void deleteCoupon(int couponId) {
+    public void deleteCoupon(int couponId) throws Exception {
+        notLoggedIn();
         couponsDao.deleteCoupon(couponId);
     }
 
-    public ArrayList<Coupon> getCompanyCoupons() {
-        return couponsDao.getAllCompanyCoupons(company.getId());
+    public ArrayList<Coupon> getCompanyCoupons() throws Exception {
+        notLoggedIn();
+        return couponsDao.getAllCompanyCoupons(companyId);
     }
 
-    public ArrayList<Coupon> getCompanyCoupons(Category category) {
+    public ArrayList<Coupon> getCompanyCoupons(Category category) throws Exception {
+        notLoggedIn();
         return couponsDao.getAllCompanyCoupons(category);
     }
 
-    public ArrayList<Coupon> getCompanyCoupons(double maxPrice) {
-        return couponsDao.getCompanyCouponsBelowPrice(company.getId(), maxPrice);
+    public ArrayList<Coupon> getCompanyCoupons(double maxPrice) throws Exception {
+        notLoggedIn();
+        return couponsDao.getCompanyCouponsBelowPrice(companyId, maxPrice);
     }
 
-    public Company getCompanyDetails() {
-        return company;
+    public Company getCompanyDetails() throws Exception {
+        notLoggedIn();
+        return companyDao.getOneCompany(companyId);
     }
 
 
     @Override
-    protected boolean login(String email, String password) {
+    public boolean login(String email, String password) {
+        boolean isNotNull = nonNull(email) && nonNull(password);
+        boolean isNotEmpty = !(email.isEmpty()) && !(password.isEmpty());
 
-        var company = companyDao.getOneCompanyByEmail(email);
-        if (isNull(company)) {
-            return false;
+        if (isNotNull && isNotEmpty) {
 
+            Company companyByEmail = companyDao.getOneCompanyByEmail(email);
+            if (nonNull(companyByEmail)) {
+                companyId = companyByEmail.getId();
+                return companyByEmail.getPassword().equals(password);
+
+            }
         }
-        if (!password.equals(company.getPassword())) {
-            return false;
+        return false;
+    }
+    private void notLoggedIn() throws Exception {
+        if(this.companyId<=0){
+            throw new UnAuthorizedException("Access denied, please log in!");
         }
-
-        this.company = company;
-        return true;
     }
 }
