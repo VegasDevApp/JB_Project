@@ -10,10 +10,11 @@ public enum Category {
 
     public static Category getCategoryNameById(int id){
         var categories = Category.values();
-        for (int i = 0; i < categories.length; i++) {
-            if(i == id-1) return categories[i];
+        if (id <= categories.length)
+            return categories[id-1];
+        else {
+            return categories[0];
         }
-        return categories[0];
     }
 
     public int getId() {
