@@ -136,6 +136,8 @@ public class CouponsDaoImpl implements CouponsDAO {
         }
         return result;
     }
+
+    //TODO - Check
     @Override
     public boolean deleteCouponsByCompanyId(int companyId) {
 
@@ -191,6 +193,7 @@ public class CouponsDaoImpl implements CouponsDAO {
         }
     }
 
+    //TODO - Check
     @Override
     public void deleteCouponPurchasesByCompanyId(int companyId){
         String sql = "DELETE FROM COSTUMERS_VS_COUPONS " +
@@ -270,6 +273,55 @@ public class CouponsDaoImpl implements CouponsDAO {
 
         increaseCouponAmountByCustomerId(customerId);
         deleteCouponPurchasesByCustomerId(customerId);
+    }
+
+    public ArrayList<Coupon> getAllCustomerCoupons(int customerID) {
+        ArrayList<Coupon> result = new ArrayList<>();
+
+        String sql = "SELECT * FROM COUPONS WHERE ID IN (SELECT * FROM CUSTOMERS_VS_COUPONS " +
+                "WHERE CUSTOMER_ID=?);";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, customerID);
+
+        ResultSet dbResult = DBManager.runQueryForResult(sql, params);
+        if (nonNull(dbResult)) {
+            result = Converter.populate(dbResult);
+        }
+        return result;
+    }
+
+    public ArrayList<Coupon> getAllCustomerCoupons(int customerID, Category category) {
+        ArrayList<Coupon> result = new ArrayList<>();
+
+        String sql = "SELECT * FROM COUPONS WHERE ID IN " +
+                "(SELECT * FROM CUSTOMERS_VS_COUPONS WHERE CUSTOMER_ID=?)" +
+                "AND CATEGORY_ID = ?";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1,customerID);
+        params.put(2,category.getId());
+
+        ResultSet dbResult = DBManager.runQueryForResult(sql, params);
+        if (nonNull(dbResult)) {
+            result = Converter.populate(dbResult);
+        }
+        return result;
+    }
+
+    public ArrayList<Coupon> getCustomerCouponsBelowPrice(int customerId, double price) {
+        ArrayList<Coupon> result = new ArrayList<>();
+
+        String sql = "SELECT * FROM COUPONS WHERE ID IN " +
+                "(SELECT * FROM CUSTOMERS_VS_COUPONS WHERE CUSTOMER_ID=?)" +
+                "AND PRICE <= ?";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, customerId);
+        params.put(2, price);
+
+        ResultSet dbResult = DBManager.runQueryForResult(sql, params);
+        if (nonNull(dbResult)) {
+            result = Converter.populate(dbResult);
+        }
+        return result;
     }
 
     private boolean isCustomerHasCoupon(int customerID, int couponID) {
