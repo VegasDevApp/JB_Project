@@ -11,5 +11,5 @@ public interface CompanyDAO {
     boolean deleteCompany(int companyId);
     Company getOneCompany(int companyId);
     ArrayList<Company> getAllCompanies();
-
+    Company getOneCompanyByEmail(String email);
 }

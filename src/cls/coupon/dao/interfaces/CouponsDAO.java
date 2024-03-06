@@ -1,6 +1,7 @@
 package cls.coupon.dao.interfaces;
 
 import cls.coupon.beans.Coupon;
+import cls.enums.Category;
 
 import java.util.ArrayList;
 
@@ -16,4 +17,11 @@ public interface CouponsDAO {
     boolean deleteCouponsByCompanyId(int companyId);
 
     void detachAllCouponFromCustomer(int customerId);
+    boolean isCouponExist(Coupon coupon);
+    ArrayList<Coupon> getAllCompanyCoupons(int companyID);
+
+    ArrayList<Coupon> getAllCompanyCoupons(Category category);
+
+    ArrayList<Coupon> getCompanyCouponsBelowPrice(int companyID, double price);
+
 }
