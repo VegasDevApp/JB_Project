@@ -1,10 +1,8 @@
 package cls.job.thread;
 
-import cls.coupon.beans.Coupon;
 import cls.coupon.dao.impl.CouponsDaoImpl;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 import static java.util.Objects.isNull;
 
@@ -51,13 +49,9 @@ public class CouponExpirationDailyJob implements Runnable {
     }
 
 
-    //after extracting all the expired coupons it deletes them
+    //deletes all expired coupons
     private void deleteExpiredCoupons() {
         LocalDate currentTime = LocalDate.now();
-        ArrayList<Coupon> expiredCoupons = couponsDao.getAllExpiredCoupons(currentTime);
-
-        for (Coupon expiredCoupon : expiredCoupons) {
-            couponsDao.deleteCoupon(expiredCoupon.getId());
-        }
+        couponsDao.deleteAllExpiredCoupons(currentTime);
     }
 }

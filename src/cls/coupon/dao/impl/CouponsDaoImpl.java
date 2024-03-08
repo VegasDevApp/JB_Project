@@ -346,6 +346,14 @@ public class CouponsDaoImpl implements CouponsDAO {
         return result;
     }
 
+    public void deleteAllExpiredCoupons(LocalDate endDate){
+        String sql  = "DELETE FROM COUPONS WHERE END_DATE=?";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, endDate);
+
+        DBManager.runQuery(sql, params);
+    }
+
     private boolean isCustomerHasCoupon(int customerID, int couponID) {
         String sql = "SELECT count(*) AS COUNT FROM COSTUMERS_VS_COUPONS " +
                 "WHERE CUSTOMER_ID = ? AND COUPON_ID = ?;";
