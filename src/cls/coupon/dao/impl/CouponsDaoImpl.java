@@ -63,14 +63,14 @@ public class CouponsDaoImpl implements CouponsDAO {
         return result;
     }
 
-    public boolean isCouponExist(Coupon coupon){
+    public boolean isCouponExist(Coupon coupon) {
         var result = false;
         String sql = "SELECT * FROM COUPONS WHERE COMPANY_ID = ? AND TITLE = ?;";
         Map<Integer, Object> params = new HashMap<>();
 
         // Add ID for WHERE
-        params.put( 1, coupon.getId());
-        params.put( 2, coupon.getTitle());
+        params.put(1, coupon.getId());
+        params.put(2, coupon.getTitle());
         ResultSet dbResult = DBManager.runQueryForResult(sql, params);
         if (nonNull(dbResult)) {
             var coupons = Converter.populate(dbResult);
@@ -83,7 +83,7 @@ public class CouponsDaoImpl implements CouponsDAO {
     @Override
     public void deleteCoupon(int couponID) {
         Coupon coupon = getOneCoupon(couponID);
-        if(nonNull(coupon)){
+        if (nonNull(coupon)) {
             detachCouponFromAllCustomers(couponID);
             String sql = "DELETE FROM COUPONS WHERE ID=?;";
             Map<Integer, Object> params = new HashMap<>();
@@ -91,6 +91,7 @@ public class CouponsDaoImpl implements CouponsDAO {
             DBManager.runQuery(sql, params);
         }
     }
+
     @Override
     public ArrayList<Coupon> getAllCompanyCoupons(int companyID) {
         ArrayList<Coupon> result = new ArrayList<>();
@@ -141,10 +142,10 @@ public class CouponsDaoImpl implements CouponsDAO {
     @Override
     public boolean deleteCouponsByCompanyId(int companyId) {
 
-            String sql = "DELETE FROM COUPONS WHERE COMPANY_ID = ?;";
-            Map<Integer, Object> params = new HashMap<>();
-            params.put(1, companyId);
-            return DBManager.runQuery(sql, params);
+        String sql = "DELETE FROM COUPONS WHERE COMPANY_ID = ?;";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, companyId);
+        return DBManager.runQuery(sql, params);
     }
 
     @Override
@@ -194,13 +195,13 @@ public class CouponsDaoImpl implements CouponsDAO {
     }
 
     @Override
-    public void deleteCouponPurchasesByCompanyId(int companyId){
+    public void deleteCouponPurchasesByCompanyId(int companyId) {
         String sql = "DELETE FROM COSTUMERS_VS_COUPONS " +
                 "WHERE COUPON_ID IN (" +
-                "SELECT ID " +
-                "FROM Coupons " +
-                "WHERE COMPANY_ID = ?" +
-                ");";
+                    "SELECT ID " +
+                    "FROM Coupons " +
+                    "WHERE COMPANY_ID = ?" +
+                    ");";
 
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, companyId);
@@ -228,23 +229,24 @@ public class CouponsDaoImpl implements CouponsDAO {
      * Before deleting a customer, returns all his or her
      * coupons back.
      * YOU MUST-CLEAR PURCHASE HISTORY AS WELL!!!
+     *
      * @param customerID
      */
-    private void increaseCouponAmountByCustomerId(int customerID){
+    private void increaseCouponAmountByCustomerId(int customerID) {
         String sql = "UPDATE COUPONS " +
                 "SET AMOUNT = AMOUNT + 1 " +
                 "WHERE ID IN (" +
                     "SELECT COUPON_ID " +
                     "FROM COSTUMERS_VS_COUPONS " +
                     "WHERE CUSTOMER_ID = ?" +
-                ");";
+                    ");";
 
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerID);
         DBManager.runQuery(sql, params);
     }
 
-    private void deleteCouponPurchasesByCustomerId(int customer){
+    private void deleteCouponPurchasesByCustomerId(int customer) {
         String sql = "DELETE FROM COSTUMERS_VS_COUPONS " +
                 "WHERE CUSTOMER_ID = ?;";
 
@@ -258,10 +260,11 @@ public class CouponsDaoImpl implements CouponsDAO {
      * Will delete all coupons from history
      * and increase coupon amount by one, so
      * the other customer can buy it if coupon still valid
+     *
      * @param customerId
      */
     @Override
-    public void detachAllCouponFromCustomer(int customerId){
+    public void detachAllCouponFromCustomer(int customerId) {
 
         // We are performing this LOGIC in DAO
         // To ensure that both these operations
@@ -296,8 +299,8 @@ public class CouponsDaoImpl implements CouponsDAO {
                 "(SELECT * FROM CUSTOMERS_VS_COUPONS WHERE CUSTOMER_ID=?)" +
                 "AND CATEGORY_ID = ?";
         Map<Integer, Object> params = new HashMap<>();
-        params.put(1,customerID);
-        params.put(2,category.getId());
+        params.put(1, customerID);
+        params.put(2, category.getId());
 
         ResultSet dbResult = DBManager.runQueryForResult(sql, params);
         if (nonNull(dbResult)) {
@@ -321,6 +324,48 @@ public class CouponsDaoImpl implements CouponsDAO {
             result = Converter.populate(dbResult);
         }
         return result;
+    }
+
+    public void deleteExpiredCoupons() {
+        //we extract the current date from the time the method was used
+        //later we use it to delete the coupons from the purchase history
+        //and after that we delete the coupons from the database
+
+        LocalDate currentDate = LocalDate.now();
+        deleteExpiredCouponsPurchases(currentDate);
+        deleteAllExpiredCoupons(currentDate);
+    }
+
+    /**
+     * Take endDate and deletes all the expired coupons from the purchase history that are less than that date
+     *
+     * @param endDate the expired date of the coupon
+     */
+    private void deleteExpiredCouponsPurchases(LocalDate endDate) {
+        String sql = "DELETE FROM COSTUMERS_VS_COUPONS " +
+                "WHERE COUPON_ID IN (" +
+                "SELECT ID " +
+                "FROM Coupons " +
+                "WHERE END_DATE < ?" +
+                ");";
+
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, endDate);
+
+        DBManager.runQuery(sql, params);
+    }
+
+    /**
+     * Take endDate and deletes all the expired coupons that are less than that date
+     *
+     * @param endDate the expired date of the coupon
+     */
+    private void deleteAllExpiredCoupons(LocalDate endDate){
+        String sql  = "DELETE FROM COUPONS WHERE END_DATE<?";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, endDate);
+
+        DBManager.runQuery(sql, params);
     }
 
     private boolean isCustomerHasCoupon(int customerID, int couponID) {
@@ -397,4 +442,6 @@ public class CouponsDaoImpl implements CouponsDAO {
 
         return params;
     }
+
+
 }
