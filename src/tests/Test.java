@@ -14,6 +14,7 @@ public class Test {
 
         companyTest.createCouponsTest();
         companyTest.getAllCouponsTest();
+        companyTest.createSameCouponsTest();
     }
 
     private static void administratorTest() {

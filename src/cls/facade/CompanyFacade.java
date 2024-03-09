@@ -21,7 +21,7 @@ public class CompanyFacade extends ClientFacade {
         if (!couponsDao.isCouponExist(coupon)) {
             couponsDao.addCoupon(coupon);
         } else {
-            System.out.println("Coupon already with title " + coupon.getTitle() + " exist");
+            System.out.println("Coupon already with title " + coupon.getTitle() + " for companyId:" + companyId + " exist");
         }
     }
 

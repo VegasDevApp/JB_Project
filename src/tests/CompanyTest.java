@@ -96,8 +96,8 @@ public class CompanyTest extends CommonTest {
         try {
             generateCoupons();
             var coupons = facade.getCompanyCoupons();
-            String msgAdd = "createCouponsTest() adding same coupons for company";
-            String msgGet = "getAllCouponsTest() got " + coupons.size() + " expected " + COUPONS_TOTAL;
+            String msgAdd = "createSameCouponsTest() adding same coupons for company";
+            String msgGet = "createSameCouponsTest() got " + coupons.size() + " expected " + COUPONS_TOTAL;
             if(coupons.size() == COUPONS_TOTAL){
                 testPassed(msgAdd);
                 testPassed(msgGet);

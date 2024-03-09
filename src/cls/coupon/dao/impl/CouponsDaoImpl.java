@@ -37,6 +37,11 @@ public class CouponsDaoImpl implements CouponsDAO {
         boolean result = false;
         Coupon target = getOneCoupon(coupon.getId());
         if (target != null) {
+
+            // Updating company ID is not allowed!
+            // Ensure that previous company ID remains
+            coupon.setCompanyID(target.getCompanyID());
+
             //COMPANY_ID`, `CATEGORY_ID`, `TITLE`, `DESCRIPTION`, `START_DATE`, `END_DATE`, `AMOUNT`, `PRICE`, `IMAGE`) " +
             String sql = "UPDATE `COUPONS` " +
                     "SET " +
@@ -69,7 +74,7 @@ public class CouponsDaoImpl implements CouponsDAO {
         Map<Integer, Object> params = new HashMap<>();
 
         // Add ID for WHERE
-        params.put(1, coupon.getId());
+        params.put(1, coupon.getCompanyID());
         params.put(2, coupon.getTitle());
         ResultSet dbResult = DBManager.runQueryForResult(sql, params);
         if (nonNull(dbResult)) {
