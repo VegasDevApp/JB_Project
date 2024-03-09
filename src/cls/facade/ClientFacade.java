@@ -11,7 +11,6 @@ public abstract class ClientFacade {
     protected CompanyDAO companyDao = new CompanyDaoImpl();
     protected CustomersDAO customersDao = new CustomersDaoImpl();
     protected CouponsDAO couponsDao = new CouponsDaoImpl();
-
-    protected  abstract boolean  login(String email, String password);
+    public abstract boolean  login(String email, String password);
 
 }

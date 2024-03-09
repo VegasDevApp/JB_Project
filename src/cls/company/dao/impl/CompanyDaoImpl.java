@@ -59,7 +59,6 @@ public class CompanyDaoImpl implements CompanyDAO {
 
     }
 
-    //TODO - Check
     @Override
     public boolean deleteCompany(int companyId) {
         boolean result = false;
