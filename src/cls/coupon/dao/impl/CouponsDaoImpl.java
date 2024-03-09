@@ -194,7 +194,6 @@ public class CouponsDaoImpl implements CouponsDAO {
         }
     }
 
-    //TODO - Check
     @Override
     public void deleteCouponPurchasesByCompanyId(int companyId) {
         String sql = "DELETE FROM COSTUMERS_VS_COUPONS " +
