@@ -198,7 +198,7 @@ public class CouponsDaoImpl implements CouponsDAO {
         String sql = "DELETE FROM COSTUMERS_VS_COUPONS " +
                 "WHERE COUPON_ID IN (" +
                 "SELECT ID " +
-                "FROM Coupon " +
+                "FROM Coupons " +
                 "WHERE COMPANY_ID = ?" +
                 ");";
 

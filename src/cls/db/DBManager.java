@@ -2,27 +2,32 @@ package cls.db;
 
 import cls.utils.Utilities;
 
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.Map;
 
 public class DBManager {
 
-    public static void initDataBase(){
+    public static void initDataBase() {
         // Read content of file
-        String fileContent = Utilities.getFileContent("src/cls/db/Initialization.sql");
-
-        if(runQuery(fileContent)){
-            System.out.println("DB INIT OK");
-        } else {
-            System.out.println("DB INIT ERROR!");
+        String fileContent = null;
+        try {
+            fileContent = Utilities.getFileContent("src/cls/db/Initialization.sql");
+            if (runQuery(fileContent)) {
+                System.out.println("DB INIT OK");
+            } else {
+                System.out.println("DB INIT ERROR!");
+            }
+        } catch (IOException e) {
+            System.out.println("Cannot read Initialization.sql file!");
         }
     }
 
-    public static boolean runQuery(String sql){
+    public static boolean runQuery(String sql) {
         //use connection from connection pool to send queries to our DB
         Connection connection = null;
-        try{
+        try {
             //get a connection for connection pool
             connection = ConnectionPool.getInstance().getConnection();
 
@@ -41,28 +46,28 @@ public class DBManager {
         }
     }
 
-    public static boolean runQuery(String sql, Map<Integer, Object> params){
+    public static boolean runQuery(String sql, Map<Integer, Object> params) {
         Connection connection = null;
-        try{
+        try {
             connection = ConnectionPool.getInstance().getConnection();
             PreparedStatement statement = connection.prepareStatement(sql);
 
-            params.forEach((key,value)->{
-                try{
+            params.forEach((key, value) -> {
+                try {
                     //integer,string,date,double,boolean,float
-                    if (value instanceof Integer){
-                        statement.setInt(key,(Integer)value);
-                    } else if (value instanceof String){
-                        statement.setString(key,String.valueOf(value));
-                    } else if (value instanceof Date){
-                        statement.setDate(key,(Date)value);
-                    } else if (value instanceof LocalDate){
-                        statement.setDate(key, Date.valueOf((LocalDate)value));
-                    } else if (value instanceof Double){
-                        statement.setDouble(key,(Double) value);
-                    } else if (value instanceof Boolean){
-                        statement.setBoolean(key,(Boolean) value);
-                    } else if (value instanceof Float){
+                    if (value instanceof Integer) {
+                        statement.setInt(key, (Integer) value);
+                    } else if (value instanceof String) {
+                        statement.setString(key, String.valueOf(value));
+                    } else if (value instanceof Date) {
+                        statement.setDate(key, (Date) value);
+                    } else if (value instanceof LocalDate) {
+                        statement.setDate(key, Date.valueOf((LocalDate) value));
+                    } else if (value instanceof Double) {
+                        statement.setDouble(key, (Double) value);
+                    } else if (value instanceof Boolean) {
+                        statement.setBoolean(key, (Boolean) value);
+                    } else if (value instanceof Float) {
                         statement.setFloat(key, (Float) value);
                     }
                 } catch (SQLException e) {
@@ -80,26 +85,26 @@ public class DBManager {
         }
     }
 
-    public static ResultSet runQueryForResult(String sql, Map<Integer, Object> params){
+    public static ResultSet runQueryForResult(String sql, Map<Integer, Object> params) {
         Connection connection = null;
-        try{
+        try {
             connection = ConnectionPool.getInstance().getConnection();
             PreparedStatement statement = connection.prepareStatement(sql);
 
-            params.forEach((key,value)->{
-                try{
+            params.forEach((key, value) -> {
+                try {
                     //integer,string,date,double,boolean,float
-                    if (value instanceof Integer){
-                        statement.setInt(key,(Integer)value);
-                    } else if (value instanceof String){
-                        statement.setString(key,String.valueOf(value));
-                    } else if (value instanceof Date){
-                        statement.setDate(key,(Date)value);
-                    } else if (value instanceof Double){
-                        statement.setDouble(key,(Double) value);
-                    } else if (value instanceof Boolean){
-                        statement.setBoolean(key,(Boolean) value);
-                    } else if (value instanceof Float){
+                    if (value instanceof Integer) {
+                        statement.setInt(key, (Integer) value);
+                    } else if (value instanceof String) {
+                        statement.setString(key, String.valueOf(value));
+                    } else if (value instanceof Date) {
+                        statement.setDate(key, (Date) value);
+                    } else if (value instanceof Double) {
+                        statement.setDouble(key, (Double) value);
+                    } else if (value instanceof Boolean) {
+                        statement.setBoolean(key, (Boolean) value);
+                    } else if (value instanceof Float) {
                         statement.setFloat(key, (Float) value);
                     }
                 } catch (SQLException e) {
@@ -116,9 +121,9 @@ public class DBManager {
         }
     }
 
-    public static ResultSet runQueryForResult(String sql){
+    public static ResultSet runQueryForResult(String sql) {
         Connection connection = null;
-        try{
+        try {
             connection = ConnectionPool.getInstance().getConnection();
             PreparedStatement statement = connection.prepareStatement(sql);
 

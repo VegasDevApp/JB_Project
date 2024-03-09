@@ -1,9 +1,9 @@
 package cls.db.configuration;
 
+import cls.exceptions.JsonConvertException;
 import cls.utils.Utilities;
-import org.json.JSONException;
-import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,20 +12,16 @@ public class Loader {
         Map<String, String> result = new HashMap<>();
 
         // Read content of file
-        String fileContent = Utilities.getFileContent("src/resources/db-config.json");
+        String fileContent = null;
 
-        if (fileContent != null && !fileContent.isBlank()) {
-            try {
-                // Take a content as JSON object
-                JSONObject json = new JSONObject(fileContent);
-
-                // Populate hash map
-                for (String key : json.keySet()) {
-                    result.put(key, json.get(key).toString());
-                }
-            } catch (JSONException e) {
-                System.out.println(e.getMessage());
-            }
+        // Convert it from JSON to map
+        try {
+            fileContent = Utilities.getFileContent("src/resources/db-config.json");
+            result = Utilities.jsonFileContentToMap(fileContent);
+        } catch (IOException e) {
+            System.out.println("Cannot read DB configuration JSON file!");
+        } catch (JsonConvertException e) {
+            System.out.println("Cannot parse DB configuration JSON file!");
         }
         return result;
     }

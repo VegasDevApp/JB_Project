@@ -14,8 +14,11 @@ public class ConnectionPool {
     //number of connections to the sql is maximum 20 but the default is 10.
     private static final int NUMBER_OF_CONNECTIONS = 10;
 
+    // To prevent filling it more than one time
+    private static boolean POOL_IS_READY = false;
+
     //singleton connection.
-    public static ConnectionPool instance = null;
+    private static ConnectionPool instance = null;
     private final Stack<Connection> connections = new Stack<>();
 
 
@@ -27,6 +30,10 @@ public class ConnectionPool {
 
     //opens a new connection
     private void openAllConnection() throws SQLException {
+
+        // Check if it already filled
+        if(POOL_IS_READY) return;
+
         //creates connection according to the number of connections assigned
         for (int counter = 0; counter < NUMBER_OF_CONNECTIONS; counter++) {
             //creates the connection each loop
@@ -34,10 +41,12 @@ public class ConnectionPool {
             //pushes the new connection into the connections stack
             connections.push(connection);
         }
+
+        POOL_IS_READY = true;
     }
 
     //closes the connection
-    private void closeAllConnections() throws InterruptedException {
+    public void closeAllConnections() throws InterruptedException {
         //critical code!
         synchronized (connections) {
             //sync all the connections and hold them while the number of connections is less than the NUMBER_OF_CONNECTIONS.

@@ -15,8 +15,9 @@ public class CompanyFacade extends ClientFacade {
     public CompanyFacade() {
     }
 
-    public void addCoupon(Coupon coupon) throws Exception {
+    public void addCoupon(Coupon coupon) throws UnAuthorizedException {
         notLoggedIn();
+        coupon.setCompanyID(companyId);
         if (!couponsDao.isCouponExist(coupon)) {
             couponsDao.addCoupon(coupon);
         } else {
@@ -25,32 +26,32 @@ public class CompanyFacade extends ClientFacade {
     }
 
 
-    public void updateCoupon(Coupon coupon) throws Exception {
+    public void updateCoupon(Coupon coupon) throws UnAuthorizedException {
         notLoggedIn();
         couponsDao.updateCoupon(coupon);
     }
 
-    public void deleteCoupon(int couponId) throws Exception {
+    public void deleteCoupon(int couponId) throws UnAuthorizedException {
         notLoggedIn();
         couponsDao.deleteCoupon(couponId);
     }
 
-    public ArrayList<Coupon> getCompanyCoupons() throws Exception {
+    public ArrayList<Coupon> getCompanyCoupons() throws UnAuthorizedException {
         notLoggedIn();
         return couponsDao.getAllCompanyCoupons(companyId);
     }
 
-    public ArrayList<Coupon> getCompanyCoupons(Category category) throws Exception {
+    public ArrayList<Coupon> getCompanyCoupons(Category category) throws UnAuthorizedException {
         notLoggedIn();
         return couponsDao.getAllCompanyCoupons(category);
     }
 
-    public ArrayList<Coupon> getCompanyCoupons(double maxPrice) throws Exception {
+    public ArrayList<Coupon> getCompanyCoupons(double maxPrice) throws UnAuthorizedException {
         notLoggedIn();
         return couponsDao.getCompanyCouponsBelowPrice(companyId, maxPrice);
     }
 
-    public Company getCompanyDetails() throws Exception {
+    public Company getCompanyDetails() throws UnAuthorizedException {
         notLoggedIn();
         return companyDao.getOneCompany(companyId);
     }
@@ -72,7 +73,7 @@ public class CompanyFacade extends ClientFacade {
         }
         return false;
     }
-    private void notLoggedIn() throws Exception {
+    private void notLoggedIn() throws UnAuthorizedException {
         if(this.companyId<=0){
             throw new UnAuthorizedException("Access denied, please log in!");
         }

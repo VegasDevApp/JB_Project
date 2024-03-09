@@ -43,7 +43,7 @@ public class Coupon {
     }
 
     public int getCategoryId() {
-        return category.ordinal();
+        return category.ordinal()+1;
     }
 
     public void setCategory(Category category) {
