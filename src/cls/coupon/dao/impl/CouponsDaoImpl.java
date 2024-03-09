@@ -199,10 +199,10 @@ public class CouponsDaoImpl implements CouponsDAO {
     public void deleteCouponPurchasesByCompanyId(int companyId) {
         String sql = "DELETE FROM COSTUMERS_VS_COUPONS " +
                 "WHERE COUPON_ID IN (" +
-                "SELECT ID " +
-                "FROM Coupon " +
-                "WHERE COMPANY_ID = ?" +
-                ");";
+                    "SELECT ID " +
+                    "FROM Coupons " +
+                    "WHERE COMPANY_ID = ?" +
+                    ");";
 
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, companyId);
@@ -237,10 +237,10 @@ public class CouponsDaoImpl implements CouponsDAO {
         String sql = "UPDATE COUPONS " +
                 "SET AMOUNT = AMOUNT + 1 " +
                 "WHERE ID IN (" +
-                "SELECT COUPON_ID " +
-                "FROM COSTUMERS_VS_COUPONS " +
-                "WHERE CUSTOMER_ID = ?" +
-                ");";
+                    "SELECT COUPON_ID " +
+                    "FROM COSTUMERS_VS_COUPONS " +
+                    "WHERE CUSTOMER_ID = ?" +
+                    ");";
 
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerID);
@@ -327,27 +327,42 @@ public class CouponsDaoImpl implements CouponsDAO {
         return result;
     }
 
+    public void deleteExpiredCoupons() {
+        //we extract the current date from the time the method was used
+        //later we use it to delete the coupons from the purchase history
+        //and after that we delete the coupons from the database
+
+        LocalDate currentDate = LocalDate.now();
+        deleteExpiredCouponsPurchases(currentDate);
+        deleteAllExpiredCoupons(currentDate);
+    }
+
     /**
-     * Take endDate and returns an ArrayList<Coupon> with all the expired coupons that day
+     * Take endDate and deletes all the expired coupons from the purchase history that are less than that date
      *
      * @param endDate the expired date of the coupon
-     * @return ArrayList<Coupon> of all the expired coupons
      */
-    public ArrayList<Coupon> getAllExpiredCoupons(LocalDate endDate) {
-        ArrayList<Coupon> result = null;
-        String sql = "SELECT * FROM COUPONS WHERE END_DATE=?";
+    private void deleteExpiredCouponsPurchases(LocalDate endDate) {
+        String sql = "DELETE FROM COSTUMERS_VS_COUPONS " +
+                "WHERE COUPON_ID IN (" +
+                "SELECT ID " +
+                "FROM Coupons " +
+                "WHERE END_DATE < ?" +
+                ");";
+
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, endDate);
 
-        ResultSet dbResult = DBManager.runQueryForResult(sql, params);
-        if (nonNull(dbResult)) {
-            result = Converter.populate(dbResult);
-        }
-        return result;
+        DBManager.runQuery(sql, params);
     }
 
-    public void deleteAllExpiredCoupons(LocalDate endDate){
-        String sql  = "DELETE FROM COUPONS WHERE END_DATE=?";
+    /**
+     * Take endDate and deletes all the expired coupons that are less than that date
+     *
+     * @param endDate the expired date of the coupon
+     */
+    private void deleteAllExpiredCoupons(LocalDate endDate){
+        String sql  = "DELETE FROM COUPONS WHERE END_DATE<?";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, endDate);
 
@@ -428,4 +443,6 @@ public class CouponsDaoImpl implements CouponsDAO {
 
         return params;
     }
+
+
 }

@@ -2,8 +2,6 @@ package cls.job.thread;
 
 import cls.coupon.dao.impl.CouponsDaoImpl;
 
-import java.time.LocalDate;
-
 import static java.util.Objects.isNull;
 
 public class CouponExpirationDailyJob implements Runnable {
@@ -11,6 +9,8 @@ public class CouponExpirationDailyJob implements Runnable {
     private final CouponsDaoImpl couponsDao = new CouponsDaoImpl();
     private boolean quit;
     private static CouponExpirationDailyJob instance = null;
+    private final long DAILY_24HOURS_CHECK = (1000 * 60 * 60 * 24);
+
 
 
     private CouponExpirationDailyJob() {
@@ -34,8 +34,7 @@ public class CouponExpirationDailyJob implements Runnable {
         while (!quit) {
             deleteExpiredCoupons();
             try {
-                long dailyCheck = (1000 * 60 * 60 * 24);
-                Thread.sleep(dailyCheck);
+                Thread.sleep(DAILY_24HOURS_CHECK);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -51,7 +50,6 @@ public class CouponExpirationDailyJob implements Runnable {
 
     //deletes all expired coupons
     private void deleteExpiredCoupons() {
-        LocalDate currentTime = LocalDate.now();
-        couponsDao.deleteAllExpiredCoupons(currentTime);
+    couponsDao.deleteExpiredCoupons();
     }
 }
