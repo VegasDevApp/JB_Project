@@ -15,6 +15,13 @@ public class Test {
         companyTest.createCouponsTest();
         companyTest.getAllCouponsTest();
         companyTest.createSameCouponsTest();
+        companyTest.getCompanyCouponsByCategoryTest();
+        companyTest.getCompanyCouponsByMaxPriceTest();
+        companyTest.getCompanyDetailsTest();
+        // Delete coupon with history
+
+
+
     }
 
     private static void administratorTest() {

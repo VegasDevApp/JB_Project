@@ -9,12 +9,14 @@ import java.util.Map;
 
 public class DBManager {
 
-    public static void initDataBase() {
+    public static boolean initDataBase() {
+        boolean response = false;
         // Read content of file
         String fileContent = null;
         try {
             fileContent = Utilities.getFileContent("src/cls/db/Initialization.sql");
-            if (runQuery(fileContent)) {
+            response = runQuery(fileContent);
+            if (response) {
                 System.out.println("DB INIT OK");
             } else {
                 System.out.println("DB INIT ERROR!");
@@ -22,6 +24,7 @@ public class DBManager {
         } catch (IOException e) {
             System.out.println("Cannot read Initialization.sql file!");
         }
+        return response;
     }
 
     public static boolean runQuery(String sql) {

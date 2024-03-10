@@ -55,6 +55,7 @@ public class ConnectionPool {
             }
             //removes all the connections from the Stack.
             connections.removeAllElements();
+            System.out.println("Database connections amount is " + connections.size());
         }
 
     }

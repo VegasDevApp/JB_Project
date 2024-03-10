@@ -43,7 +43,7 @@ public class CompanyFacade extends ClientFacade {
 
     public ArrayList<Coupon> getCompanyCoupons(Category category) throws UnAuthorizedException {
         notLoggedIn();
-        return couponsDao.getAllCompanyCoupons(category);
+        return couponsDao.getAllCompanyCoupons(companyId, category);
     }
 
     public ArrayList<Coupon> getCompanyCoupons(double maxPrice) throws UnAuthorizedException {

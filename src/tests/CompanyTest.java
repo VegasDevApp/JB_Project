@@ -9,6 +9,8 @@ import cls.facade.CompanyFacade;
 
 import java.time.LocalDate;
 
+import static java.util.Objects.nonNull;
+
 public class CompanyTest extends CommonTest {
 
     public static final int COUPONS_TOTAL = 4;
@@ -113,5 +115,76 @@ public class CompanyTest extends CommonTest {
         }
     }
 
+    public void getCompanyCouponsByCategoryTest() {
+        try {
+            int successCounter = 0;
+            for (Category category: Category.values()) {
+                var coupons = facade.getCompanyCoupons(category);
 
+                String msg = "getCompanyCouponsByCategoryTest() - Category: " + category.name();
+                if(coupons.size() == 1 && coupons.get(0).getCategory() == category){
+                    successCounter++;
+                    testPassed(msg);
+                } else {
+                    testFailed(msg);
+                }
+            }
+            int expected = Category.values().length;
+            String msg = "getCompanyCouponsByCategoryTest() - Expected: " + expected + " Succeed: " + successCounter;
+            if(expected == successCounter){
+                testPassed(msg);
+            }else {
+                testFailed(msg);
+            }
+        } catch (UnAuthorizedException e) {
+            testFailed("getCompanyCouponsByCategoryTest() test" + e.getMessage());
+        } catch (Exception e){
+            testFailed("getCompanyCouponsByCategoryTest() test");
+
+        }
+    }
+
+    public void getCompanyCouponsByMaxPriceTest() {
+        try {
+            double maxPrice = 102;
+            var coupons = facade.getCompanyCoupons(maxPrice);
+            for (Coupon coupon: coupons) {
+                String msg = "getCompanyCouponsByMaxPriceTest() - Max price: " + maxPrice + " Got: " + coupon.getPrice();
+                if(coupon.getPrice() > maxPrice){
+                    testFailed(msg);
+                } else {
+                    testPassed(msg);
+                }
+            }
+            String msg = "getCompanyCouponsByMaxPriceTest() - Expected result by max price: " + maxPrice +
+                    " is " + 3 + " Got: " + coupons.size();
+            if(coupons.size() == 3){
+                testPassed(msg);
+            } else {
+                testFailed(msg);
+            }
+        } catch (UnAuthorizedException e) {
+            testFailed("getCompanyCouponsByCategoryTest() test" + e.getMessage());
+        } catch (Exception e){
+            testFailed("getCompanyCouponsByCategoryTest() test");
+        }
+    }
+
+    public void getCompanyDetailsTest() {
+        try {
+            var companyDetails = facade.getCompanyDetails();
+            if(nonNull(companyDetails)
+            && COMPANY_TEST_NAME.equals(companyDetails.getName())
+            && COMPANY_TEST_EMAIL.equals(companyDetails.getEmail())
+            && COMPANY_TEST_PASSWORD.equals(companyDetails.getPassword())){
+                testPassed("getCompanyDetailsTest() OK!");
+            } else {
+                testFailed("getCompanyDetailsTest() Oops!");
+            }
+        } catch (UnAuthorizedException e) {
+            testFailed("getCompanyCouponsByCategoryTest() test" + e.getMessage());
+        } catch (Exception e){
+            testFailed("getCompanyCouponsByCategoryTest() test");
+        }
+    }
 }
