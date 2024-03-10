@@ -4,6 +4,16 @@ public class Test {
     public static void testAll(){
         administratorTest();
         companyTests();
+        customerTests();
+    }
+
+    private static void customerTests() {
+        CustomerTest customerTest = new CustomerTest();
+        customerTest.loginBadCredentialsEmailTest();
+        customerTest.loginBadCredentialsPasswordTest();
+        customerTest.loginTest();
+        customerTest.purchaseCouponTest();
+        customerTest.purchaseSameCouponTest();
     }
 
     private static void companyTests() {

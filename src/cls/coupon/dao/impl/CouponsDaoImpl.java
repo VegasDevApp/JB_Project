@@ -202,7 +202,7 @@ public class CouponsDaoImpl implements CouponsDAO {
 
     @Override
     public void deleteCouponPurchasesByCompanyId(int companyId) {
-        String sql = "DELETE FROM CUST0MERS_VS_COUPONS " +
+        String sql = "DELETE FROM CUSTOMERS_VS_COUPONS " +
                 "WHERE COUPON_ID IN (" +
                     "SELECT ID " +
                     "FROM Coupons " +
@@ -243,7 +243,7 @@ public class CouponsDaoImpl implements CouponsDAO {
                 "SET AMOUNT = AMOUNT + 1 " +
                 "WHERE ID IN (" +
                     "SELECT COUPON_ID " +
-                    "FROM CUST0MERS_VS_COUPONS " +
+                    "FROM CUSTOMERS_VS_COUPONS " +
                     "WHERE CUSTOMER_ID = ?" +
                     ");";
 
@@ -253,7 +253,7 @@ public class CouponsDaoImpl implements CouponsDAO {
     }
 
     private void deleteCouponPurchasesByCustomerId(int customer) {
-        String sql = "DELETE FROM CUST0MERS_VS_COUPONS " +
+        String sql = "DELETE FROM CUSTOMERS_VS_COUPONS " +
                 "WHERE CUSTOMER_ID = ?;";
 
         Map<Integer, Object> params = new HashMap<>();
@@ -286,7 +286,7 @@ public class CouponsDaoImpl implements CouponsDAO {
     public ArrayList<Coupon> getAllCustomerCoupons(int customerID) {
         ArrayList<Coupon> result = new ArrayList<>();
 
-        String sql = "SELECT * FROM COUPONS WHERE ID IN (SELECT * FROM CUSTOMERS_VS_COUPONS " +
+        String sql = "SELECT * FROM COUPONS WHERE ID IN (SELECT COUPON_ID FROM CUSTOMERS_VS_COUPONS " +
                 "WHERE CUSTOMER_ID=?);";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerID);
@@ -348,7 +348,7 @@ public class CouponsDaoImpl implements CouponsDAO {
      * @param endDate the expired date of the coupon
      */
     private void deleteExpiredCouponsPurchases(LocalDate endDate) {
-        String sql = "DELETE FROM CUST0MERS_VS_COUPONS " +
+        String sql = "DELETE FROM CUSTOMERS_VS_COUPONS " +
                 "WHERE COUPON_ID IN (" +
                 "SELECT ID " +
                 "FROM Coupons " +
@@ -375,7 +375,7 @@ public class CouponsDaoImpl implements CouponsDAO {
     }
 
     private boolean isCustomerHasCoupon(int customerID, int couponID) {
-        String sql = "SELECT count(*) AS COUNT FROM CUST0MERS_VS_COUPONS " +
+        String sql = "SELECT count(*) AS COUNT FROM CUSTOMERS_VS_COUPONS " +
                 "WHERE CUSTOMER_ID = ? AND COUPON_ID = ?;";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerID);
@@ -392,7 +392,7 @@ public class CouponsDaoImpl implements CouponsDAO {
     }
 
     private boolean attachCouponToCustomer(int customerID, int couponID) {
-        String sql = "INSERT INTO CUST0MERS_VS_COUPONS (CUSTOMER_ID, COUPON_ID) " +
+        String sql = "INSERT INTO CUSTOMERS_VS_COUPONS (CUSTOMER_ID, COUPON_ID) " +
                 "VALUES (?, ?)";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerID);
@@ -401,7 +401,7 @@ public class CouponsDaoImpl implements CouponsDAO {
     }
 
     private boolean detachCouponFromCustomer(int customerID, int couponID) {
-        String sql = "DELETE FROM CUST0MERS_VS_COUPONS " +
+        String sql = "DELETE FROM CUSTOMERS_VS_COUPONS " +
                 "WHERE CUSTOMER_ID=? AND COUPON_ID=?;";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerID);
@@ -410,7 +410,7 @@ public class CouponsDaoImpl implements CouponsDAO {
     }
 
     private boolean detachCouponFromAllCustomers(int couponID) {
-        String sql = "DELETE FROM CUST0MERS_VS_COUPONS " +
+        String sql = "DELETE FROM CUSTOMERS_VS_COUPONS " +
                 "WHERE COUPON_ID=?;";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, couponID);

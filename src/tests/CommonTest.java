@@ -30,7 +30,7 @@ public class CommonTest {
         String sql =
                 "SET FOREIGN_KEY_CHECKS = 0;" +
                 "TRUNCATE `site_coupons`.`COMPANIES`;" +
-                "TRUNCATE `site_coupons`.`CUST0MERS_VS_COUPONS`;" +
+                "TRUNCATE `site_coupons`.`CUSTOMERS_VS_COUPONS`;" +
                 "TRUNCATE `site_coupons`.`COUPONS`;" +
                 "TRUNCATE `site_coupons`.`CUSTOMERS`;" +
                 "SET FOREIGN_KEY_CHECKS = 1;";

@@ -72,25 +72,9 @@ public class CompanyTest extends CommonTest {
                 testFailed(msgGet);
             }
         } catch (UnAuthorizedException e) {
-            testFailed("createCoupons() test" + e.getMessage());
+            testFailed("getAllCouponsTest() test " + e.getMessage());
         } catch (Exception e){
-            testFailed("createCoupons() test");
-
-        }
-    }
-
-    private void generateCoupons() throws UnAuthorizedException {
-        for (int i = 0; i < COUPONS_TOTAL; i++) {
-            Coupon coupon = new Coupon();
-            coupon.setCategory(Category.values()[i]);
-            coupon.setTitle("Coupon title " + i);
-            coupon.setDescription("Coupon description " + i);
-            coupon.setPrice(i + 100d);
-            coupon.setImage("image " + i);
-            coupon.setAmount(i);
-            coupon.setStartDate(LocalDate.now().plusDays(i - 1));
-            coupon.setEndDate(LocalDate.now().plusDays(i));
-            facade.addCoupon(coupon);
+            testFailed("getAllCouponsTest() test");
         }
     }
 
@@ -164,9 +148,9 @@ public class CompanyTest extends CommonTest {
                 testFailed(msg);
             }
         } catch (UnAuthorizedException e) {
-            testFailed("getCompanyCouponsByCategoryTest() test" + e.getMessage());
+            testFailed("getCompanyCouponsByMaxPriceTest() test " + e.getMessage());
         } catch (Exception e){
-            testFailed("getCompanyCouponsByCategoryTest() test");
+            testFailed("getCompanyCouponsByMaxPriceTest() test");
         }
     }
 
@@ -182,9 +166,24 @@ public class CompanyTest extends CommonTest {
                 testFailed("getCompanyDetailsTest() Oops!");
             }
         } catch (UnAuthorizedException e) {
-            testFailed("getCompanyCouponsByCategoryTest() test" + e.getMessage());
+            testFailed("getCompanyDetailsTest() test " + e.getMessage());
         } catch (Exception e){
-            testFailed("getCompanyCouponsByCategoryTest() test");
+            testFailed("getCompanyDetailsTest() test");
+        }
+    }
+
+    private void generateCoupons() throws UnAuthorizedException {
+        for (int i = 0; i < COUPONS_TOTAL; i++) {
+            Coupon coupon = new Coupon();
+            coupon.setCategory(Category.values()[i]);
+            coupon.setTitle("Coupon title " + i);
+            coupon.setDescription("Coupon description " + i);
+            coupon.setPrice(i + 100d);
+            coupon.setImage("image " + i);
+            coupon.setAmount(i+1);
+            coupon.setStartDate(LocalDate.now().plusDays(i - 1));
+            coupon.setEndDate(LocalDate.now().plusDays(i));
+            facade.addCoupon(coupon);
         }
     }
 }
