@@ -1,0 +1,27 @@
+[
+  {
+    "name": "company1",
+    "email": "company1@example.com",
+    "password": "1234"
+  },
+  {
+    "name": "company2",
+    "email": "company2@example.com",
+    "password": "1234"
+  },
+  {
+    "name": "company3",
+    "email": "company3@example.com",
+    "password": "1234"
+  },
+  {
+    "name": "company4",
+    "email": "company4@example.com",
+    "password": "1234"
+  },
+  {
+    "name": "company5",
+    "email": "company5@example.com",
+    "password": "1234"
+  }
+]

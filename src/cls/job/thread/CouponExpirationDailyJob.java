@@ -32,11 +32,13 @@ public class CouponExpirationDailyJob implements Runnable {
     @Override
     public void run() {
         while (!quit) {
-            deleteExpiredCoupons();
             try {
+            deleteExpiredCoupons();
                 Thread.sleep(DAILY_24HOURS_CHECK);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
+            } catch (Exception e) {
+                stop();
             }
         }
     }

@@ -24,7 +24,7 @@ public class AdminFacade extends ClientFacade {
         return this.isLoggedIn;
     }
 
-    public void addCompany(Company company) throws Exception {
+    public void addCompany(Company company) throws UnAuthorizedException {
 
         notLoggedIn();
 
@@ -39,7 +39,7 @@ public class AdminFacade extends ClientFacade {
         this.companyDao.updateCompany(company);
     }
 
-    public void deleteCompany(int companyId) throws Exception {
+    public void deleteCompany(int companyId) throws UnAuthorizedException {
 
         notLoggedIn();
 
@@ -53,19 +53,19 @@ public class AdminFacade extends ClientFacade {
         this.companyDao.deleteCompany(companyId);
     }
 
-    public List<Company> getAllCompanies() throws Exception {
+    public List<Company> getAllCompanies() throws UnAuthorizedException {
         notLoggedIn();
         return this.companyDao.getAllCompanies();
     }
 
-    public Company getOneCompany(int companyId) throws Exception {
+    public Company getOneCompany(int companyId) throws UnAuthorizedException {
         notLoggedIn();
         return this.companyDao.getOneCompany(companyId);
     }
 
-    public void addCustomer(Customer customer) throws Exception {
+    public void addCustomer(Customer customer) throws UnAuthorizedException {
         notLoggedIn();
-        if(this.customersDao.isCustomerExists(customer.getEmail())) {
+        if(!this.customersDao.isCustomerExists(customer.getEmail())) {
             this.customersDao.addCustomer(customer);
         }
         else {
@@ -73,28 +73,28 @@ public class AdminFacade extends ClientFacade {
         }
     }
 
-    public void updateCustomer(Customer customer) throws Exception {
+    public void updateCustomer(Customer customer) throws UnAuthorizedException {
         notLoggedIn();
         this.customersDao.updateCustomer(customer);
     }
 
-    public void deleteCustomer(int customerId) throws Exception {
+    public void deleteCustomer(int customerId) throws UnAuthorizedException {
         notLoggedIn();
         this.couponsDao.detachAllCouponFromCustomer(customerId);
         this.customersDao.deleteCustomer(customerId);
     }
 
-    public List<Customer> getAllCustomers() throws Exception {
+    public List<Customer> getAllCustomers() throws UnAuthorizedException {
         notLoggedIn();
         return customersDao.getAllCustomers();
     }
 
-    public Customer getOneCustomer(int customerId) throws Exception {
+    public Customer getOneCustomer(int customerId) throws UnAuthorizedException {
         notLoggedIn();
         return this.customersDao.getOneCustomer(customerId);
     }
 
-    private void notLoggedIn() throws Exception {
+    private void notLoggedIn() throws UnAuthorizedException {
         if(!this.isLoggedIn){
             throw new UnAuthorizedException("Access denied, please log in!");
         }

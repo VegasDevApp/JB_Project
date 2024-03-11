@@ -3,6 +3,7 @@ package cls.company.beans;
 import cls.coupon.beans.Coupon;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Company {
     private int id;
@@ -63,5 +64,18 @@ public class Company {
                 ", password='" + password + '\'' +
                 ", coupons=" + coupons +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Company company = (Company) o;
+        return id == company.id && Objects.equals(name, company.name) && Objects.equals(email, company.email) && Objects.equals(password, company.password) && Objects.equals(coupons, company.coupons);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, email, password, coupons);
     }
 }
