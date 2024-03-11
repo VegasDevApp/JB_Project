@@ -3,6 +3,7 @@ package tests;
 import cls.LoginManager;
 import cls.coupon.beans.Coupon;
 import cls.coupon.dao.impl.CouponsDaoImpl;
+import cls.enums.Category;
 import cls.enums.ClientType;
 import cls.exceptions.UnAuthorizedException;
 import cls.facade.CustomerFacade;
@@ -111,6 +112,61 @@ public class CustomerTest extends CommonTest {
             testFailed(exceptionTitle);
         }
     }
+
+    public void getCouponsByCategoryTest() {
+        String exceptionTitle = "getCouponsByCategoryTest() test ";
+        try {
+
+            var coupons = facade.getCustomerCoupons(Category.ELECTRICITY);
+            String msg = "getCouponsByCategoryTest() " + Category.ELECTRICITY.name();
+            if(coupons.size() == 1 && coupons.get(0).getCategory() == Category.ELECTRICITY){
+                testPassed(msg);
+            } else {
+                testFailed(msg);
+            }
+
+            coupons = facade.getCustomerCoupons(Category.VACATION);
+            msg = "getCouponsByCategoryTest() " + Category.VACATION.name();
+            if(coupons.isEmpty()){
+                testPassed(msg);
+            } else {
+                testFailed(msg);
+            }
+
+        } catch (UnAuthorizedException e) {
+            testFailed(exceptionTitle + e.getMessage());
+        } catch (Exception e){
+            testFailed(exceptionTitle);
+        }
+    }
+
+    public void getCouponsByMaxPriceTest() {
+        String exceptionTitle = "getCouponsByMaxPriceTest() test ";
+        try {
+
+            var coupons = facade.getCustomerCoupons(100D);
+            String msg="getCouponsByMaxPriceTest() by max price 100 is zero!";
+            if(coupons.isEmpty()){
+                testPassed(msg);
+            } else {
+                testFailed(msg);
+            }
+
+            coupons = facade.getCustomerCoupons(110D);
+            msg="getCouponsByMaxPriceTest() by max price 110 is one!";
+            if(coupons.size() == 1){
+                testPassed(msg);
+            } else {
+                testFailed(msg);
+            }
+
+        } catch (UnAuthorizedException e) {
+            testFailed(exceptionTitle + e.getMessage());
+        } catch (Exception e){
+            testFailed(exceptionTitle);
+        }
+    }
+
 
     private Coupon getCoupon(int couponId) {
         Coupon res = couponsDao.getOneCoupon(couponId);

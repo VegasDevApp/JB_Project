@@ -302,7 +302,7 @@ public class CouponsDaoImpl implements CouponsDAO {
         ArrayList<Coupon> result = new ArrayList<>();
 
         String sql = "SELECT * FROM COUPONS WHERE ID IN " +
-                "(SELECT * FROM CUSTOMERS_VS_COUPONS WHERE CUSTOMER_ID=?)" +
+                "(SELECT COUPON_ID FROM CUSTOMERS_VS_COUPONS WHERE CUSTOMER_ID=?)" +
                 "AND CATEGORY_ID = ?";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerID);
@@ -319,7 +319,7 @@ public class CouponsDaoImpl implements CouponsDAO {
         ArrayList<Coupon> result = new ArrayList<>();
 
         String sql = "SELECT * FROM COUPONS WHERE ID IN " +
-                "(SELECT * FROM CUSTOMERS_VS_COUPONS WHERE CUSTOMER_ID=?)" +
+                "(SELECT COUPON_ID FROM CUSTOMERS_VS_COUPONS WHERE CUSTOMER_ID=?)" +
                 "AND PRICE <= ?";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerId);

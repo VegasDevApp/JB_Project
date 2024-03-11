@@ -2,13 +2,17 @@ package tests;
 
 import cls.LoginManager;
 import cls.company.beans.Company;
+import cls.coupon.dao.impl.CouponsDaoImpl;
+import cls.coupon.dao.interfaces.CouponsDAO;
 import cls.customer.beans.Customer;
+import cls.customer.dao.interfaces.CustomersDAO;
 import cls.enums.ClientType;
 import cls.exceptions.UnAuthorizedException;
 import cls.facade.AdminFacade;
 
 import java.util.ArrayList;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 public class AdministratorTest extends CommonTest {
@@ -17,9 +21,13 @@ public class AdministratorTest extends CommonTest {
     public static final int EXPECTED_CUSTOMERS_AMOUNT = 10;
     private AdminFacade facade;
 
+    private CouponsDAO couponsDAO;
+    private CustomersDAO customersDAO;
+
     public AdministratorTest() {
         // Clear all data from DB
         this.wipeDbTables();
+        this.couponsDAO = new CouponsDaoImpl();
     }
 
     public void loginBadCredentialsEmailTest(){
@@ -50,19 +58,21 @@ public class AdministratorTest extends CommonTest {
     }
 
     public void addCompanyTest() {
+        String exceptionTitle = "addCompanyTest() test ";
         ArrayList<Company> companiesToAdd = getEntitiesFromResource(EntityType.Company);
         for (Company company : companiesToAdd) {
             try {
                 facade.addCompany(company);
             } catch (UnAuthorizedException e) {
-                testFailed("addCompany() test " + e.getMessage());
+                testFailed(exceptionTitle + e.getMessage());
             } catch (Exception e) {
-                testFailed("addCompany() test");
+                testFailed(exceptionTitle);
             }
         }
     }
 
     public void getAllCompaniesTest() {
+        String exceptionTitle = "getAllCompaniesTest() test ";
         try {
             var companies = facade.getAllCompanies();
             if (companies.size() == EXPECTED_COMPANIES_AMOUNT) {
@@ -72,13 +82,14 @@ public class AdministratorTest extends CommonTest {
                 testFailed("getAllCompanies() got " + companies.size() + " instead of " + EXPECTED_COMPANIES_AMOUNT + "!");
             }
         } catch (UnAuthorizedException e) {
-            testFailed("getAllCompanies() test" + e.getMessage());
+            testFailed(exceptionTitle + e.getMessage());
         } catch (Exception e) {
-            testFailed("getAllCompanies() test");
+            testFailed(exceptionTitle);
         }
     }
 
     public void addSameCompanyTest() {
+        String exceptionTitle = "addSameCompanyTest() test ";
         ArrayList<Company> companiesToAdd = getEntitiesFromResource(EntityType.Company);
         try {
             for (Company company : companiesToAdd) {
@@ -92,13 +103,14 @@ public class AdministratorTest extends CommonTest {
                         " instead of " + EXPECTED_COMPANIES_AMOUNT + "!");
             }
         } catch (UnAuthorizedException e) {
-            testFailed("addCompany() test " + e.getMessage());
+            testFailed(exceptionTitle + e.getMessage());
         } catch (Exception e) {
-            testFailed("addCompany() test");
+            testFailed(exceptionTitle);
         }
     }
 
     public void addSameNameCompanyTest() {
+        String exceptionTitle = "addSameNameCompanyTest() test ";
         ArrayList<Company> companiesToAdd = getEntitiesFromResource(EntityType.Company);
         try {
             for (Company company : companiesToAdd) {
@@ -113,13 +125,14 @@ public class AdministratorTest extends CommonTest {
                         " instead of " + EXPECTED_COMPANIES_AMOUNT + "!");
             }
         } catch (UnAuthorizedException e) {
-            testFailed("addSameNameCompanyTest() test " + e.getMessage());
+            testFailed(exceptionTitle + e.getMessage());
         } catch (Exception e) {
-            testFailed("addSameNameCompanyTest() test");
+            testFailed(exceptionTitle);
         }
     }
 
     public void addSameEmailCompanyTest() {
+        String exceptionTitle = "addSameEmailCompanyTest() test ";
         ArrayList<Company> companiesToAdd = getEntitiesFromResource(EntityType.Company);
         try {
             for (Company company : companiesToAdd) {
@@ -134,15 +147,15 @@ public class AdministratorTest extends CommonTest {
                         " instead of 5!");
             }
         } catch (UnAuthorizedException e) {
-            testFailed("addSameEmailCompanyTest() test " + e.getMessage());
+            testFailed(exceptionTitle + e.getMessage());
         } catch (Exception e) {
-            testFailed("addSameEmailCompanyTest() test");
+            testFailed(exceptionTitle);
         }
     }
 
     public void getCompanyByIdTest() {
+        String exceptionTitle = "getCompanyByIdTest() test ";
         try {
-
             Company company = facade.getAllCompanies().stream().findFirst().orElse(null);
             if(nonNull(company)){
                 Company company2 = facade.getOneCompany(company.getId());
@@ -154,9 +167,9 @@ public class AdministratorTest extends CommonTest {
             }
 
         } catch (UnAuthorizedException e) {
-            testFailed("getCompanyByIdTest() test " + e.getMessage());
+            testFailed(exceptionTitle + e.getMessage());
         } catch (Exception e) {
-            testFailed("getCompanyByIdTest() test");
+            testFailed(exceptionTitle);
         }
     }
 
@@ -166,19 +179,21 @@ public class AdministratorTest extends CommonTest {
     // CUSTOMERS
 
     public void addCustomersTest() {
+        String exceptionTitle = "addCustomersTest() test ";
         ArrayList<Customer> customersToAdd = getEntitiesFromResource(EntityType.Customer);
         for (Customer customer : customersToAdd) {
             try {
                 facade.addCustomer(customer);
             } catch (UnAuthorizedException e) {
-                testFailed("UnAuthorizedException addCustomersTest() test");
+                testFailed(exceptionTitle + e.getMessage());
             } catch (Exception e) {
-                testFailed("addCustomersTest() test");
+                testFailed(exceptionTitle);
             }
         }
     }
 
     public void getAllCustomersTest() {
+        String exceptionTitle = "getAllCustomersTest() test ";
         try {
             var customers = facade.getAllCustomers();
             if (customers.size() == EXPECTED_CUSTOMERS_AMOUNT) {
@@ -188,13 +203,14 @@ public class AdministratorTest extends CommonTest {
                 testFailed("getAllCustomersTest() got " + customers.size() + " instead of " + EXPECTED_CUSTOMERS_AMOUNT + "!");
             }
         } catch (UnAuthorizedException e) {
-            testFailed("getAllCustomersTest() test " + e.getMessage());
+            testFailed(exceptionTitle + e.getMessage());
         } catch (Exception e) {
-            testFailed("getAllCustomersTest() test");
+            testFailed(exceptionTitle);
         }
     }
 
     public void addSameCustomersTest() {
+        String exceptionTitle = "addSameCustomersTest() test ";
         ArrayList<Customer> customersToAdd = getEntitiesFromResource(EntityType.Customer);
         try {
             for (Customer customer : customersToAdd) {
@@ -208,15 +224,15 @@ public class AdministratorTest extends CommonTest {
                         " instead of " + EXPECTED_CUSTOMERS_AMOUNT + "!");
             }
         } catch (UnAuthorizedException e) {
-            testFailed("addSameCustomersTest() test " + e.getMessage());
+            testFailed(exceptionTitle + e.getMessage());
         } catch (Exception e) {
-            testFailed("addSameCustomersTest() test");
+            testFailed(exceptionTitle);
         }
     }
 
     public void getCustomerByIdTest() {
+        String exceptionTitle = "getCustomerByIdTest() test ";
         try {
-
             Customer customer = facade.getAllCustomers().stream().findFirst().orElse(null);
             if(nonNull(customer)){
                 Customer customer2 = facade.getOneCustomer(customer.getId());
@@ -228,9 +244,43 @@ public class AdministratorTest extends CommonTest {
             }
 
         } catch (UnAuthorizedException e) {
-            testFailed("getCustomerByIdTest() test " + e.getMessage());
+            testFailed(exceptionTitle + e.getMessage());
         } catch (Exception e) {
-            testFailed("getCustomerByIdTest() test");
+            testFailed(exceptionTitle);
+        }
+    }
+
+    public void deleteCompanyTest() {
+        String exceptionTitle = "deleteCompanyTest() test ";
+        try {
+            int testCompanyId = 2;
+            // Check if there is coupons left
+            var coupons = this.couponsDAO.getAllCompanyCoupons(testCompanyId);
+
+            Company company = facade.getOneCompany(testCompanyId);
+            if(isNull(company) || coupons.isEmpty() || company.getId() != testCompanyId){
+                testFailed("deleteCompanyTest() no conditions for test ID: " + testCompanyId);
+            }
+            facade.deleteCompany(testCompanyId);
+            company = facade.getOneCompany(testCompanyId);
+            if(isNull(company)){
+                testPassed("deleteCompanyTest() Company with test ID: " + testCompanyId + " deleted!");
+            } else {
+                testFailed("deleteCompanyTest() Company with test ID: " + testCompanyId + " NOT deleted!");
+            }
+
+            var coupon = this.couponsDAO.getOneCoupon(coupons.get(0).getId());
+            if(isNull(coupon)){
+                testPassed("deleteCompanyTest() no coupon remain of deleted company");
+            } else {
+                testFailed("deleteCompanyTest() HAVE coupon remain of deleted company");
+            }
+
+
+        } catch (UnAuthorizedException e) {
+            testFailed(exceptionTitle + e.getMessage());
+        } catch (Exception e) {
+            testFailed(exceptionTitle);
         }
     }
 }
