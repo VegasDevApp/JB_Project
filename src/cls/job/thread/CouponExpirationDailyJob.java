@@ -12,7 +12,6 @@ public class CouponExpirationDailyJob implements Runnable {
     private final long DAILY_24HOURS_CHECK = (1000 * 60 * 60 * 24);
 
 
-
     private CouponExpirationDailyJob() {
 
     }
@@ -33,11 +32,15 @@ public class CouponExpirationDailyJob implements Runnable {
     public void run() {
         while (!quit) {
             try {
-            deleteExpiredCoupons();
+                System.out.println("Deleting expired coupons please wait......");
+                deleteExpiredCoupons();
+                System.out.println("Deletion of expired coupons is done");
                 Thread.sleep(DAILY_24HOURS_CHECK);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                System.out.println("Thread stopped - sleep is interrupted");
+                stop();
             } catch (Exception e) {
+                System.out.println(e.getMessage());
                 stop();
             }
         }
@@ -45,13 +48,11 @@ public class CouponExpirationDailyJob implements Runnable {
 
     //stops the thread
     public void stop() {
-        quit = true;
-
+        this.quit = true;
     }
-
 
     //deletes all expired coupons
     private void deleteExpiredCoupons() {
-    couponsDao.deleteExpiredCoupons();
+        couponsDao.deleteExpiredCoupons();
     }
 }
