@@ -7,20 +7,22 @@ import cls.job.thread.CouponExpirationDailyJob;
 
 public class SystemControl {
 
-    private static CouponExpirationDailyJob couponExpirationDailyJob = CouponExpirationDailyJob.getInstance();
+    private static final CouponExpirationDailyJob COUPON_EXPIRATION_DAILY_JOB = CouponExpirationDailyJob.getInstance();
+    private static final Thread COUPON_EXPIRATION_THREAD = new Thread(COUPON_EXPIRATION_DAILY_JOB);
 
     public static void start() {
         // Load db configuration
         DbConfig.load();
         DBManager.initDataBase();
 
-        //couponExpirationDailyJob.run();
+        //Load expired coupon deletion thread
+        COUPON_EXPIRATION_THREAD.start();
 
     }
 
     public static void Stop() {
         try {
-            //couponExpirationDailyJob.stop();
+            COUPON_EXPIRATION_THREAD.interrupt();
             ConnectionPool.getInstance().closeAllConnections();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

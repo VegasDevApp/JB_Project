@@ -25,6 +25,7 @@ public class Main {
          *  Tests will wipe all data stored in database!!!
          */
         Test.testAll();
+
         SystemControl.Stop();
     }
 }
